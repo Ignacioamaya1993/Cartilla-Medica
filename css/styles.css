@@ -1,0 +1,103 @@
+body {
+    padding: 5px;
+    margin: 0;
+    font-family: Verdana, sans-serif;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding-top: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header h1 {
+    flex: 1;
+    text-align: center;
+    color: #08c3f1;
+    margin: 0;
+}
+
+.header .logo {
+    width: 200px; /* Ajusta el tamaño de la imagen según lo necesites */
+    height: auto;
+    margin-left: 0px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center; /* Centrará el grupo de controles */
+    align-items: center;
+    gap: 20px; /* Espacio entre los elementos */
+    margin-bottom: 20px;
+}
+
+.controls label {
+    font-size: 16px; /* Tamaño del texto */
+    color: #08c3f1; /* Color del texto */
+}
+
+.controls select, .controls input {
+    font-size: 14px; /* Tamaño del texto en los campos */
+    padding: 5px; /* Espaciado interno */
+    border: 1px solid #08c3f1; /* Borde de los campos */
+    border-radius: 4px; /* Bordes redondeados */
+    color: #333; /* Color del texto dentro de los campos */
+}
+
+.controls select {
+    width: 190px; /* Ancho del campo select */
+}
+
+.controls input {
+    width: 190px; /* Ancho del campo input */
+}
+
+.controls select:focus, .controls input:focus {
+    outline: none;
+    border-color: #17ecda; /* Color de borde cuando el campo está en foco */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #08c3f1;
+    color: #ffffff;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#pagination button {
+    background-color: #08c3f1;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
