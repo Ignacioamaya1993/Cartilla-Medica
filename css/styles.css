@@ -101,3 +101,37 @@ tr:nth-child(even) {
     background-color: #cccccc;
     cursor: not-allowed;
 }
+
+/* Media queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column; /* Cambia la dirección del flex en pantallas más pequeñas */
+        align-items: center;
+    }
+
+    .header h1 {
+        margin: 10px 0;
+    }
+
+    .header .logo {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .controls {
+        flex-direction: column; /* Cambia la dirección del flex en pantallas más pequeñas */
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .controls select, .controls input {
+        font-size: 10px; /* Ajusta el tamaño del texto en pantallas más pequeñas */
+        padding: 4px;
+    }
+
+    #pagination button {
+        padding: 8px;
+        margin: 3px; /* Reduce el margen en pantallas más pequeñas */
+    }
+}
