@@ -81,7 +81,7 @@ function renderProfessionals() {
     });
 
     // Solo agregar eventos para el pop-up en modo responsive (pantallas pequeñas)
-    if (window.innerWidth <= 720) {
+    if (window.innerWidth <= 776) {
         document.querySelectorAll('.professional-link').forEach(link => {
             link.addEventListener('click', function () {
                 const specialty = this.parentElement.previousElementSibling.textContent;
