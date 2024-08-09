@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cartilla Médica Luz y Fuerza Olavarría</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
@@ -54,5 +54,12 @@
         </div>
     </div>
     <script src="js/script.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Fuerza el reflow
+            document.body.style.display = '';
+        });
+    </script>
 </body>
 </html>
