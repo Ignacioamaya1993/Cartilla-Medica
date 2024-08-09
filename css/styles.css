@@ -49,7 +49,7 @@ body {
 }
 
 /* Ajuste para pantallas grandes (navegador de PC) */
-@media (min-width: 720px) {
+@media (min-width: 769px) {
     .controls {
         flex-direction: row; /* Los elementos se muestran en fila */
     }
@@ -63,7 +63,7 @@ body {
 }
 
 /* Ajuste para pantallas pequeñas (responsive) */
-@media (max-width: 719px) {
+@media (max-width: 720px) {
     .header {
         flex-direction: column;
         align-items: center;
