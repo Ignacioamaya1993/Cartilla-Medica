@@ -1,4 +1,3 @@
-/* Estilo base */
 body {
     padding: 5px;
     margin: 0;
@@ -13,7 +12,7 @@ body {
 
 .header {
     display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan en lugar de estar en una sola línea */
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
 }
@@ -26,35 +25,80 @@ body {
 }
 
 .header .logo {
-    width: 150px; /* Ajusta el tamaño de la imagen */
+    width: 150px;
     height: auto;
     margin-left: 20px;
 }
 
 .controls {
     display: flex;
-    flex-wrap: wrap; /* Permite que los controles se envuelvan si no hay suficiente espacio */
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Reduce el espacio entre los elementos en pantallas pequeñas */
+    gap: 10px;
     margin-bottom: 20px;
 }
 
-.controls label {
-    font-size: 14px; /* Ajusta el tamaño del texto en pantallas pequeñas */
-}
-
 .controls select, .controls input {
-    font-size: 12px; /* Ajusta el tamaño del texto en pantallas pequeñas */
+    font-size: 12px;
     padding: 5px;
     border: 1px solid #08c3f1;
     border-radius: 4px;
     color: #333;
+    max-width: 200px;
 }
 
-.controls select, .controls input {
-    width: 100%; /* Asegura que los campos ocupen el 100% del contenedor en pantallas pequeñas */
-    max-width: 200px; /* Limita el ancho máximo de los campos */
+/* Ajuste para pantallas grandes (navegador de PC) */
+@media (min-width: 769px) {
+    .controls {
+        flex-direction: row; /* Los elementos se muestran en fila */
+    }
+
+    /* Estilo de los enlaces deshabilitados en pantallas grandes */
+    .professional-link {
+        text-decoration: none;
+        color: inherit;
+        cursor: default;
+    }
+}
+
+/* Ajuste para pantallas pequeñas (responsive) */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .controls-wrapper {
+        margin-bottom: 20px; /* Ajusta esta distancia para mover todo el bloque junto */
+        margin-top: 20px;
+    }
+
+    .header .logo {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .controls {
+        flex-direction: column; /* Los elementos se muestran en columna */
+        gap: 15px; /* Ajusta la separación entre los controles en pantallas pequeñas */
+    }
+
+    .controls select, .controls input {
+        width: 100%; /* Ocupa el 100% del ancho disponible */
+    }
+
+    th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
+    th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */ {
+        display: none;
+    }
+
+    /* Estilo de los enlaces habilitados en pantallas pequeñas */
+    .professional-link {
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+    }
 }
 
 table {
@@ -79,8 +123,8 @@ tr:nth-child(even) {
 
 #pagination {
     display: flex;
-    flex-wrap: wrap; /* Permite que los botones de paginación se envuelvan si no hay suficiente espacio */
     justify-content: center;
+    align-items: center; /* Centra verticalmente la información de la paginación */
     margin-top: 20px;
 }
 
@@ -90,7 +134,12 @@ tr:nth-child(even) {
     border: none;
     padding: 10px;
     cursor: pointer;
-    margin: 5px; /* Añade espacio alrededor de los botones en pantallas pequeñas */
+    margin: 5px;
+}
+
+#pagination #pageInfo {
+    margin: 0 15px; /* Agrega margen para centrar mejor la información de paginación */
+    padding-top: 5px; /* Ajuste para centrar verticalmente */
 }
 
 #pagination button:disabled {
@@ -98,36 +147,29 @@ tr:nth-child(even) {
     cursor: not-allowed;
 }
 
-/* Media queries para pantallas más pequeñas */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column; /* Cambia la dirección del flex en pantallas más pequeñas */
-        align-items: center;
-    }
-
-    .header h1 {
-        margin: 10px 0;
-    }
-
-    .header .logo {
-        margin-left: 0;
-        margin-top: 10px;
-    }
-
-    .controls {
-        flex-direction: column; /* Cambia la dirección del flex en pantallas más pequeñas */
-        gap: 10px;
-    }
+/* Personalización del SweetAlert2 Popup */
+.swal2-popup-custom {
+    font-size: 16px;
+    border-radius: 10px;
 }
 
-@media (max-width: 480px) {
-    .controls select, .controls input {
-        font-size: 10px; /* Ajusta el tamaño del texto en pantallas más pequeñas */
-        padding: 4px;
-    }
+.swal2-title-custom {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4a4a4a;
+}
 
-    #pagination button {
-        padding: 8px;
-        margin: 3px; /* Reduce el margen en pantallas más pequeñas */
-    }
+.swal2-html-custom {
+    text-align: left;
+    color: #333;
+    font-size: 16px;
+}
+
+.swal2-html-custom p {
+    margin: 10px 0;
+}
+
+.swal2-html-custom p strong {
+    font-weight: bold;
+    color: #444;
 }

@@ -3,32 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartilla Medica Luz y Fuerza Olavarria</title>
+    <title>Cartilla Médica Luz y Fuerza Olavarría</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <img src="img/osfatlyf.png" alt="Logo osfatlyf" class="logo2">
-            <h1>Cartilla Medica Luz y Fuerza Olavarria</h1>
+            <h1>Cartilla Médica Luz y Fuerza Olavarría</h1>
             <img src="img/logo-lyf.png" alt="Logo Luz y Fuerza" class="logo">
         </div>
-        <div class="controls">
-            <label for="recordsPerPage">Mostrar</label>
-            <select id="recordsPerPage">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <label for="specialtyFilter">Especialidad</label>
-            <select id="specialtyFilter">
-                <option value="all">Todas</option>
-                <!-- Especialidades dinámicas -->
-            </select>
-            <label for="search">Buscar:</label>
-            <input type="text" id="search" placeholder="Nombre del profesional">
+        <div class="controls-wrapper">
+            <div class="controls">
+                <label for="recordsPerPage">Mostrar</label>
+                <select id="recordsPerPage">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <label for="specialtyFilter">Especialidad</label>
+                <select id="specialtyFilter">
+                    <option value="all">Todas</option>
+                    <!-- Especialidades dinámicas -->
+                </select>
+                <label for="search">Buscar:</label>
+                <input type="text" id="search" placeholder="Nombre del profesional">
+            </div>
         </div>
         <table>
             <thead>
