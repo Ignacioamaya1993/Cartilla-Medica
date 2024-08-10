@@ -48,13 +48,11 @@ body {
     max-width: 200px;
 }
 
-/* Ajuste para pantallas grandes (navegador de PC) */
 @media (min-width: 769px) {
     .controls {
-        flex-direction: row; /* Los elementos se muestran en fila */
+        flex-direction: row;
     }
 
-    /* Estilo de los enlaces deshabilitados en pantallas grandes */
     .professional-link {
         text-decoration: none;
         color: inherit;
@@ -62,7 +60,6 @@ body {
     }
 }
 
-/* Ajuste para pantallas pequeñas (responsive) */
 @media screen and (max-width:776px) {
     .header {
         flex-direction: column;
@@ -70,7 +67,7 @@ body {
     }
 
     .controls-wrapper {
-        margin-bottom: 20px; /* Ajusta esta distancia para mover todo el bloque junto */
+        margin-bottom: 20px;
         margin-top: 20px;
     }
 
@@ -80,20 +77,19 @@ body {
     }
 
     .controls {
-        flex-direction: column; /* Los elementos se muestran en columna */
-        gap: 15px; /* Ajusta la separación entre los controles en pantallas pequeñas */
+        flex-direction: column;
+        gap: 15px;
     }
 
     .controls select, .controls input {
-        width: 100%; /* Ocupa el 100% del ancho disponible */
+        width: 100%;
     }
 
-    th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
-    th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */ {
+    th:nth-child(4), td:nth-child(4),
+    th:nth-child(5), td:nth-child(5)  {
         display: none;
     }
 
-    /* Estilo de los enlaces habilitados en pantallas pequeñas */
     .professional-link {
         text-decoration: underline;
         color: blue;
@@ -124,7 +120,7 @@ tr:nth-child(even) {
 #pagination {
     display: flex;
     justify-content: center;
-    align-items: center; /* Centra verticalmente la información de la paginación */
+    align-items: center;
     margin-top: 20px;
 }
 
@@ -138,8 +134,8 @@ tr:nth-child(even) {
 }
 
 #pagination #pageInfo {
-    margin: 0 15px; /* Agrega margen para centrar mejor la información de paginación */
-    padding-top: 5px; /* Ajuste para centrar verticalmente */
+    margin: 0 15px;
+    padding-top: 5px;
 }
 
 #pagination button:disabled {
@@ -147,7 +143,6 @@ tr:nth-child(even) {
     cursor: not-allowed;
 }
 
-/* Personalización del SweetAlert2 Popup */
 .swal2-popup-custom {
     font-size: 16px;
     border-radius: 10px;
@@ -172,4 +167,40 @@ tr:nth-child(even) {
 .swal2-html-custom p strong {
     font-weight: bold;
     color: #444;
+}
+
+/* Estilos para el footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #08c3f1;
+    color: white;
+    padding: 10px 30px;
+    margin-top: 20px;
+}
+
+.footer-text {
+    font-size: 16px;
+}
+
+.footer-icons {
+    display: flex;
+    align-items: center; /* Centra el texto con los iconos */
+}
+
+.footer-icons span {
+    margin-right: 10px;
+    font-size: 16px;
+    display: flex; /* Asegura que el texto se alinee correctamente con los iconos */
+    align-items: center; /* Centra el texto verticalmente */
+}
+
+.footer-icons img {
+    width: 30px;
+    margin-left: 20px;
+}
+
+.footer-icons a {
+    display: inline-block;
 }
