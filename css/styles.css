@@ -4,12 +4,16 @@ body {
     font-family: Verdana, sans-serif;
     background: url('/img/fondo.jpeg') no-repeat center center fixed;
     background-size: cover;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
     width: 90%;
     margin: auto;
     padding-top: 20px;
+    flex: 1; /* Se expande para ocupar el espacio disponible */
 }
 
 .header {
@@ -39,7 +43,8 @@ body {
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
-    color: #050000;
+    color: #fcfbfb;
+    font-weight: bold;
 }
 
 .controls select, .controls input {
@@ -199,10 +204,9 @@ tr:nth-child(odd) {
     color: white;
     padding: 5px 30px;
     width: 100%;
-    position: fixed; /* Mantener el footer fijo en la parte inferior */
-    bottom: 0;
-    left: 0;
+    margin-top: 20px;
     box-sizing: border-box; /* Asegura que el padding no empuje al footer fuera de la pantalla */
+    position: relative;
 }
 
 .footer-text {
