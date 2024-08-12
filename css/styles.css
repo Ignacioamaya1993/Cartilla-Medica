@@ -111,7 +111,7 @@ table {
 }
 
 thead {
-    background-color: rgba(8, 195, 241, 0.1); /* Cabecera semitransparente */
+    background-color: rgba(8, 195, 241, 0.9); /* Cabecera semitransparente */
     color: #ffffff;
 }
 
