@@ -23,7 +23,6 @@ body {
     flex: 1;
     text-align: center;
     color: #08c3f1;
-   /* -webkit-text-stroke: 0.1px #050505; /* Borde del texto */
     margin: 0;
 }
 
@@ -45,7 +44,7 @@ body {
 .controls select, .controls input {
     font-size: 12px;
     padding: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid #08c3f1;
     border-radius: 4px;
     color: #333;
@@ -109,19 +108,18 @@ table {
     width: 100%;
     border-collapse: collapse;
     background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco más translúcido */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
 }
 
 thead {
-    background-color: rgba(8, 195, 241, 0.7); /* Cabecera semitransparente */
+    background-color: rgba(8, 195, 241, 0.1); /* Cabecera semitransparente */
     color: #ffffff;
 }
 
 th, td {
-    border: 1px solid rgba(221, 221, 221, 0.8); /* Bordes más translúcidos */
+    border: 1px solid rgba(221, 221, 221, 0.6); /* Bordes más translúcidos */
     text-align: left;
     padding: 8px;
-    color: rgba(51, 51, 51, 0.9); /* Color del texto con un poco de transparencia */
+    color: rgba(2, 0, 10, 0.9); /* Color del texto con un poco de transparencia */
 }
 
 tr:nth-child(even) {
