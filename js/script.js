@@ -35,7 +35,7 @@ function updateRecordsPerPage() {
 function populateSpecialtyFilter() {
     const specialties = [...new Set(professionals.map(p => p.specialty))];
     const specialtyFilter = document.getElementById('specialtyFilter');
-    specialtyFilter.innerHTML = '<option value="all">Todas las especialidades</option>';
+    specialtyFilter.innerHTML = '<option value="all">TODAS LAS ESPECIALIDADES</option>';
 
     specialties.forEach(specialty => {
         const option = document.createElement('option');
