@@ -1,15 +1,18 @@
-body {
-    padding: 5px;
+html, body {
+    padding: 0;
     margin: 0;
     font-family: Verdana, sans-serif;
-    background: url('/img/fondo.jpeg') no-repeat center center fixed;
-    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Evita el desbordamiento horizontal */
 }
 
 .container {
     width: 90%;
     margin: auto;
     padding-top: 20px;
+    flex: 1; /* Permite que el contenedor ocupe el espacio restante, empujando el footer hacia abajo */
 }
 
 .header {
@@ -37,27 +40,24 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
 .controls select, .controls input {
-    font-size: 12px;
-    padding: 5px;
-    background-color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    padding: 8px;
     border: 1px solid #08c3f1;
     border-radius: 4px;
-    color: #070000;
+    color: #333;
     max-width: 200px;
 }
 
-/* Ajuste para pantallas grandes (navegador de PC) */
 @media (min-width: 769px) {
     .controls {
-        flex-direction: row; /* Los elementos se muestran en fila */
+        flex-direction: row;
     }
 
-    /* Estilo de los enlaces deshabilitados en pantallas grandes */
     .professional-link {
         text-decoration: none;
         color: inherit;
@@ -65,7 +65,6 @@ body {
     }
 }
 
-/* Ajuste para pantallas pequeñas (responsive) */
 @media screen and (max-width:776px) {
     .header {
         flex-direction: column;
@@ -73,7 +72,7 @@ body {
     }
 
     .controls-wrapper {
-        margin-bottom: 20px; /* Ajusta esta distancia para mover todo el bloque junto */
+        margin-bottom: 20px;
         margin-top: 20px;
     }
 
@@ -83,20 +82,19 @@ body {
     }
 
     .controls {
-        flex-direction: column; /* Los elementos se muestran en columna */
-        gap: 15px; /* Ajusta la separación entre los controles en pantallas pequeñas */
+        flex-direction: column;
+        gap: 15px;
     }
 
     .controls select, .controls input {
-        width: 100%; /* Ocupa el 100% del ancho disponible */
+        width: 100%;
     }
 
-    th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
-    th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */ {
+    th:nth-child(4), td:nth-child(4),
+    th:nth-child(5), td:nth-child(5)  {
         display: none;
     }
 
-    /* Estilo de los enlaces habilitados en pantallas pequeñas */
     .professional-link {
         text-decoration: underline;
         color: blue;
@@ -107,35 +105,27 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco más translúcido */
-    border-radius: 15px; /* Borde redondeado */
-    overflow: hidden; /* Asegura que el contenido de la tabla se ajuste al borde redondeado */
 }
 
 thead {
-    background-color: rgba(8, 195, 241, 0.9); /* Cabecera semitransparente */
+    background-color: #08c3f1;
     color: #ffffff;
 }
 
 th, td {
-    border: 1px solid rgba(221, 221, 221, 0.6); /* Bordes más translúcidos */
+    border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-    color: rgba(2, 0, 10, 0.9); /* Color del texto con un poco de transparencia */
 }
 
 tr:nth-child(even) {
-    background-color: rgba(245, 245, 245, 0.7); /* Fondo gris claro más translúcido */
-}
-
-tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco más translúcido */
+    background-color: #f2f2f2;
 }
 
 #pagination {
     display: flex;
     justify-content: center;
-    align-items: center; /* Centra verticalmente la información de la paginación */
+    align-items: center;
     margin-top: 20px;
 }
 
@@ -143,16 +133,14 @@ tr:nth-child(odd) {
     background-color: #08c3f1;
     color: white;
     border: none;
-    border-radius: 5px;
     padding: 10px;
     cursor: pointer;
     margin: 5px;
 }
 
 #pagination #pageInfo {
-    margin: 0 15px; /* Agrega margen para centrar mejor la información de paginación */
-    padding-top: 5px; /* Ajuste para centrar verticalmente */
-    color: #ffffff;
+    margin: 0 15px;
+    padding-top: 5px;
 }
 
 #pagination button:disabled {
@@ -160,7 +148,6 @@ tr:nth-child(odd) {
     cursor: not-allowed;
 }
 
-/* Personalización del SweetAlert2 Popup */
 .swal2-popup-custom {
     font-size: 16px;
     border-radius: 10px;
@@ -192,10 +179,9 @@ tr:nth-child(odd) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
     background-color: #08c3f1;
     color: white;
-    padding: 5px 30px;
+    padding: 10px 30px;
     width: 100%;
     box-sizing: border-box; /* Asegura que el padding no empuje al footer fuera de la pantalla */
 }
@@ -205,6 +191,13 @@ tr:nth-child(odd) {
 }
 
 .footer-icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-icons span {
+    margin-right: 10px;
+    font-size: 16px;
     display: flex;
     align-items: center;
 }
