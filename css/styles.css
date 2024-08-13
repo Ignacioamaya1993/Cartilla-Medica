@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-    width: 90%;
+    width: 95%;
     margin: auto;
     padding-top: 20px;
     flex: 1; /* Se expande para ocupar el espacio disponible */
@@ -44,6 +44,8 @@ body {
     gap: 10px;
     margin-bottom: 20px;
     color: #fcfbfb;
+    border: 4px;
+    border-color: #070000;
     font-weight: bold;
 }
 
