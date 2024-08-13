@@ -2,7 +2,7 @@ body {
     padding: 0;
     margin: 0;
     font-family: Verdana, sans-serif;
-    background: url('/img/fondo.jpeg') no-repeat center center fixed;
+    background: url('/img/fondo.jpeg') no-repeat center center scroll;
     background-size: cover;
     display: flex;
     flex-direction: column;
