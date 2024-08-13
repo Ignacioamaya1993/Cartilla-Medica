@@ -44,8 +44,6 @@ body {
     gap: 10px;
     margin-bottom: 20px;
     color: #fcfbfb;
-    border: 4px;
-    border-color: #070000;
     font-weight: bold;
 }
 
@@ -97,6 +95,12 @@ body {
 
     .controls select, .controls input {
         width: 100%; /* Ocupa el 100% del ancho disponible */
+    }
+
+    /* Ajustar el ancho de la columna de Especialidad solo en pantallas pequeñas */
+    th:nth-child(1), /* Ajusta este número según la posición de tu columna "Especialidad" */
+    {
+        width: 150px; /* Ajusta el valor a lo que consideres necesario */
     }
 
     th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
