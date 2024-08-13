@@ -73,9 +73,10 @@ body {
 
 /* Ajuste para pantallas pequeñas (responsive) */
 @media screen and (max-width:776px) {
-    .header {
+        .header {
         flex-direction: column;
         align-items: center;
+        
     }
 
     .controls-wrapper {
@@ -97,16 +98,16 @@ body {
         width: 100%; /* Ocupa el 100% del ancho disponible */
     }
 
-    /* Ajustar el ancho de la columna de Especialidad solo en pantallas pequeñas */
-    th:nth-child(1), /* Ajusta este número según la posición de tu columna "Especialidad" */
-    {
-        font-size: 10px;
-        
-    }
-
+   
     th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
     th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */ {
         display: none;
+    }
+
+    th:nth-child(1), /* Especialidad */
+    th:nth-child(2), /* Apellido y Nombre */
+    th:nth-child(3)  /* Dirección */ {
+        font-size: 12px; /* Ajusta el tamaño de la fuente según sea necesario */
     }
 
     /* Estilo de los enlaces habilitados en pantallas pequeñas */
