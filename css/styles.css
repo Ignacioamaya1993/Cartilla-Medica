@@ -107,7 +107,7 @@ body {
     th:nth-child(1), /* Especialidad */
     th:nth-child(2), /* Apellido y Nombre */
     th:nth-child(3)  /* Dirección */ {
-        font-size: 12px; /* Ajusta el tamaño de la fuente según sea necesario */
+        font-size: 14px; /* Ajusta el tamaño de la fuente según sea necesario */
     }
 
     /* Estilo de los enlaces habilitados en pantallas pequeñas */
