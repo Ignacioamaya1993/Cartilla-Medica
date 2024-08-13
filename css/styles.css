@@ -100,7 +100,8 @@ body {
     /* Ajustar el ancho de la columna de Especialidad solo en pantallas pequeñas */
     th:nth-child(1), /* Ajusta este número según la posición de tu columna "Especialidad" */
     {
-        width: 150px; /* Ajusta el valor a lo que consideres necesario */
+        font-size: 10px;
+        
     }
 
     th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
