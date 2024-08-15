@@ -126,3 +126,14 @@ function updatePaginationInfo() {
     document.getElementById('prevPage').disabled = currentPage === 1;
     document.getElementById('nextPage').disabled = currentPage === totalPages;
 }
+
+$(document).ready(function() {
+    $('#recordsPerPage').select2({
+        theme: 'classic',
+        width: 'resolve' // O ajustar el tamaño del selector al contenido
+    });
+    $('#specialtyFilter').select2({
+        theme: 'classic',
+        width: 'resolve'
+    });
+});
