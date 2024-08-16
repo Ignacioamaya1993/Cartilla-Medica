@@ -96,47 +96,41 @@ function renderProfessionals() {
         });
     });
 
-// Solo agregar eventos para el pop-up en modo responsive (pantallas pequeñas)
-if (window.innerWidth <= 776) {
-    document.querySelectorAll('.professional-link').forEach(link => {
-        link.addEventListener('click', function () {
-            const specialty = this.parentElement.previousElementSibling.textContent;
-            const address = this.parentElement.nextElementSibling.textContent;
-            const city = this.parentElement.nextElementSibling.nextElementSibling.textContent;
-            const phone = this.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+    // Solo agregar eventos para el pop-up en modo responsive (pantallas pequeñas)
+    if (window.innerWidth <= 776) {
+        document.querySelectorAll('.professional-link').forEach(link => {
+            link.addEventListener('click', function () {
+                const specialty = this.parentElement.previousElementSibling.textContent;
+                const address = this.parentElement.nextElementSibling.textContent;
+                const city = this.parentElement.nextElementSibling.nextElementSibling.textContent;
+                const phone = this.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
 
-            const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
+                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
 
-            Swal.fire({
-                icon: 'info',
-                title: this.textContent,
-                html: `
-                    <p><strong>Especialidad:</strong> ${specialty}</p>
-                    <p><strong>Dirección:</strong> ${address}</p>
-                    <p><strong>Localidad:</strong> ${city}</p>
-                    <p><strong>Teléfono:</strong> ${phone}</p>
-                    <iframe id="map" width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                `,
-                confirmButtonText: 'Cerrar',
-                confirmButtonColor: '#7d5fff',
-                customClass: {
-                    popup: 'swal2-popup-custom',
-                    title: 'swal2-title-custom',
-                    htmlContainer: 'swal2-html-custom'
-                },
-                width: window.innerWidth <= 776 ? '90%' : '600px', // Ajusta el ancho para responsive
-                padding: '3em',
-                didOpen: () => {
-                    const map = document.getElementById('map');
-                    if (map) {
-                        map.style.height = window.innerWidth <= 776 ? '200px' : '300px'; // Ajuste de altura en responsive
+                Swal.fire({
+                    icon: 'info',
+                    title: this.textContent,
+                    html: `
+                        <p><strong>Especialidad:</strong> ${specialty}</p>
+                        <p><strong>Dirección:</strong> ${address}</p>
+                        <p><strong>Localidad:</strong> ${city}</p>
+                        <p><strong>Teléfono:</strong> ${phone}</p>
+                        <iframe id="map" width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+                    `,
+                    confirmButtonText: 'Cerrar',
+                    confirmButtonColor: '#7d5fff',
+                    customClass: {
+                        popup: 'swal2-popup-custom',
+                        title: 'swal2-title-custom',
+                        htmlContainer: 'swal2-html-custom'
                     }
-                }
+                    
+                });
             });
         });
-    });
+    }
 }
-
 
 
 function changePage(direction) {
