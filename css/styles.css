@@ -95,6 +95,9 @@ th:nth-child(5), td:nth-child(5) {
         .header {
         flex-direction: column;
         align-items: center;
+        #map {
+            height: 200px !important; /* Asegúrate de que el mapa no sea muy alto en pantallas pequeñas */
+        }
         
     }
 
