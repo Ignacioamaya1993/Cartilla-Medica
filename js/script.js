@@ -4,6 +4,7 @@ let recordsPerPage = 10;
 let filteredProfessionals = [];
 const excelFilePath = 'profesionales.xlsx';
 
+
 // Aquí debes agregar tu clave API de Google Maps
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
@@ -70,21 +71,21 @@ function renderProfessionals() {
     professionalList.innerHTML = '';
 
     paginatedProfessionals.forEach(professional => {
+        const fullAddress = `${professional.address}, ${professional.city}`;
         const row = document.createElement('tr');
 
-        row.innerHTML = `
-            <td>${professional.specialty || ''}</td>
+        row.innerHTML = 
+            `<td>${professional.specialty || ''}</td>
             <td><span class="professional-link">${professional.name || ''}</span></td>
             <td>${professional.address || ''}</td>
             <td>${professional.city || ''}</td>
             <td>${professional.phone || ''}</td>
             <td>
-                <button class="map-button" data-address="${professional.address}, ${professional.city}">
+                <button class="map-button" data-address="${fullAddress}">
                     <img src="img/maps.png" alt="Google Maps" width="40">
                 </button>
-            </td>
-        `;
-
+            </td>`;
+        
         professionalList.appendChild(row);
     });
 
