@@ -219,6 +219,13 @@ tr:nth-child(odd) {
     margin: 10px 0;
 }
 
+/* Estilo para el mapa dentro del SweetAlert2 */
+#map {
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+}
+
 .swal2-html-custom p strong {
     font-weight: bold;
     color: #444;
