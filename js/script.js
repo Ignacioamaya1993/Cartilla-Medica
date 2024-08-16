@@ -132,6 +132,30 @@ function renderProfessionals() {
     }
 }
 
+function showMapPopup(address) {
+    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
+    
+    Swal.fire({
+        title: 'Ubicación en Google Maps',
+        html: `<iframe id="map" width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`,
+        showCloseButton: true,
+        showConfirmButton: false,
+        customClass: {
+            popup: 'swal2-popup-custom',
+            title: 'swal2-title-custom',
+            htmlContainer: 'swal2-html-custom'
+        },
+        width: window.innerWidth <= 776 ? '90%' : '600px', // Ajusta el ancho para responsive
+        padding: '3em',
+        didOpen: () => {
+            const map = document.getElementById('map');
+            if (map) {
+                map.style.height = window.innerWidth <= 776 ? '200px' : '300px'; // Ajuste de altura en responsive
+            }
+        }
+    });
+}
+
 
 function changePage(direction) {
     currentPage += direction;
