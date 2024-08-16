@@ -4,6 +4,9 @@ let recordsPerPage = 10;
 let filteredProfessionals = [];
 const excelFilePath = 'profesionales.xlsx';
 
+// Aquí debes agregar tu clave API de Google Maps
+const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
+
 document.addEventListener('DOMContentLoaded', () => {
     loadExcelFile();
 
@@ -75,9 +78,22 @@ function renderProfessionals() {
             <td>${professional.address || ''}</td>
             <td>${professional.city || ''}</td>
             <td>${professional.phone || ''}</td>
+            <td>
+                <button class="map-button" data-address="${professional.address}, ${professional.city}">
+                    <img src="img/maps.png" alt="Google Maps" width="40">
+                </button>
+            </td>
         `;
 
         professionalList.appendChild(row);
+    });
+
+    // Añadir eventos para abrir el mapa al hacer click en el botón de Google Maps
+    document.querySelectorAll('.map-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const address = this.getAttribute('data-address');
+            showMapPopup(address);
+        });
     });
 
     // Solo agregar eventos para el pop-up en modo responsive (pantallas pequeñas)
@@ -111,6 +127,24 @@ function renderProfessionals() {
     }
 }
 
+function showMapPopup(address) {
+    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
+    
+    Swal.fire({
+        title: 'Ubicación en Google Maps',
+        html: `<iframe width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`,
+        showCloseButton: true,
+        showConfirmButton: false,
+        customClass: {
+            popup: 'swal2-popup-custom',
+            title: 'swal2-title-custom',
+            htmlContainer: 'swal2-html-custom'
+        },
+        width: '600px', // Ancho del popup
+        padding: '3em'
+    });
+}
+
 function changePage(direction) {
     currentPage += direction;
     renderProfessionals();
@@ -126,14 +160,3 @@ function updatePaginationInfo() {
     document.getElementById('prevPage').disabled = currentPage === 1;
     document.getElementById('nextPage').disabled = currentPage === totalPages;
 }
-
-$(document).ready(function() {
-    $('#recordsPerPage').select2({
-        theme: 'classic',
-        width: 'resolve' // O ajustar el tamaño del selector al contenido
-    });
-    $('#specialtyFilter').select2({
-        theme: 'classic',
-        width: 'resolve'
-    });
-});
