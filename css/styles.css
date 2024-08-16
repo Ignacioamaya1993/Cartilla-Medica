@@ -119,7 +119,8 @@ th:nth-child(5), td:nth-child(5) {
 
    
     th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
-    th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */ {
+    th:nth-child(5), td:nth-child(5)  /* Ocultar columna de TELEFONO */
+    th:nth-child(6), td:nth-child(6)  /* Ocultar columna de UBICACION */ {
         display: none;
     }
 
