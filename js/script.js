@@ -6,29 +6,6 @@ let filteredProfessionals = [];
 const excelFilePath = 'profesionales.xlsx';
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
-// Inicializa el mapa cuando se abre el pop-up
-function initMap(lat, lng) {
-    var mapOptions = {
-        zoom: 15,
-        center: new google.maps.LatLng(lat, lng),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-    // Marca la ubicación en el mapa
-    var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(lat, lng),
-        map: map
-    });
-
-    // Ajuste para asegurar que el mapa se muestre correctamente en dispositivos móviles
-    window.addEventListener('resize', function() {
-        google.maps.event.trigger(map, 'resize');
-        map.setCenter(new google.maps.LatLng(lat, lng));
-    });
-}
-
 // Llama a la función initMap cuando se necesita mostrar el mapa
 function showMap(address) {
     var geocoder = new google.maps.Geocoder();
@@ -204,12 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('nextPage').addEventListener('click', () => changePage(1));
 });
 
-// Añade la API de Google Maps para cargarla de forma asíncrona
+// Llama a la función para cargar la API de Google Maps de manera asíncrona
 function loadGoogleMapsAPI() {
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
     script.async = true;
+    script.defer = true;
     document.body.appendChild(script);
+}
+
+// Asegúrate de que no esté llamando a una función 'initMap' si no la necesitas
+function initMap() {
+    // Esta función puede estar vacía si no estás usando un mapa globalmente
 }
 
 // Llama a la función para cargar la API de Google Maps
