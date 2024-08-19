@@ -2,7 +2,7 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Montserrat', sans-serif;
-    background: url('img/fondo.jpeg') no-repeat center center fixed; /* Cambia fixed a scroll */
+    background: url('/img/fondo.png') no-repeat center center fixed; /* Cambia fixed a scroll */
     background-size: cover;
     display: flex;
     flex-direction: column;
