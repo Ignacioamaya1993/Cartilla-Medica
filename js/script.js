@@ -144,6 +144,7 @@ function showMapPopup(address) {
     Swal.fire({
         title: 'Ubicación',
         html: `<iframe id="map" width="100%" height="300" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>`,
+        confirmButtonText: 'Cerrar',
         customClass: {
             popup: 'swal2-popup-custom',
             title: 'swal2-title-custom',
