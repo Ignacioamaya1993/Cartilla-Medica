@@ -3,9 +3,6 @@ let currentPage = 1;
 let recordsPerPage = 10;
 let filteredProfessionals = [];
 const excelFilePath = 'profesionales.xlsx';
-
-
-// Aquí debes agregar tu clave API de Google Maps
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -58,7 +55,7 @@ function updateProfessionals() {
         (selectedSpecialty === 'all' || p.specialty === selectedSpecialty)
     );
 
-    currentPage = 1; // Reset page to 1 whenever filters are applied
+    currentPage = 1;
     renderProfessionals();
     updatePaginationInfo();
 }
@@ -74,8 +71,8 @@ function renderProfessionals() {
         const fullAddress = `${professional.address}, ${professional.city}`;
         const row = document.createElement('tr');
 
-        row.innerHTML = 
-            `<td>${professional.specialty || ''}</td>
+        row.innerHTML = `
+            <td>${professional.specialty || ''}</td>
             <td><span class="professional-link">${professional.name || ''}</span></td>
             <td>${professional.address || ''}</td>
             <td>${professional.city || ''}</td>
@@ -89,7 +86,6 @@ function renderProfessionals() {
         professionalList.appendChild(row);
     });
 
-    // Añadir eventos para abrir el mapa al hacer click en el botón de Google Maps
     document.querySelectorAll('.map-button').forEach(button => {
         button.addEventListener('click', function () {
             const address = this.getAttribute('data-address');
@@ -97,7 +93,6 @@ function renderProfessionals() {
         });
     });
 
-    // Solo agregar eventos para el pop-up en modo responsive (pantallas pequeñas)
     if (window.innerWidth <= 776) {
         document.querySelectorAll('.professional-link').forEach(link => {
             link.addEventListener('click', function () {
@@ -116,47 +111,26 @@ function renderProfessionals() {
                         <p><strong>Dirección:</strong> ${address}</p>
                         <p><strong>Localidad:</strong> ${city}</p>
                         <p><strong>Teléfono:</strong> ${phone}</p>
-                        <iframe id="map" width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-
+                        <iframe id="map" width="100%" height="200" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>
                     `,
-                    confirmButtonText: 'Cerrar',
-                    confirmButtonColor: '#7d5fff',
                     customClass: {
                         popup: 'swal2-popup-custom',
                         title: 'swal2-title-custom',
-                        htmlContainer: 'swal2-html-custom'
+                        htmlContainer: 'swal2-html-custom',
                     }
-                    
                 });
             });
         });
     }
 }
 
-function showMapPopup(address) {
-    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
-    
-    Swal.fire({
-        title: 'Ubicación en Google Maps',
-        html: `<iframe id="map" width="100%" height="300" src="${mapUrl}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`,
-        showCloseButton: true,
-        showConfirmButton: false,
-        customClass: {
-            popup: 'swal2-popup-custom',
-            title: 'swal2-title-custom',
-            htmlContainer: 'swal2-html-custom'
-        },
-        width: window.innerWidth <= 776 ? '90%' : '600px', // Ajusta el ancho para responsive
-        padding: '3em',
-        didOpen: () => {
-            const map = document.getElementById('map');
-            if (map) {
-                map.style.height = window.innerWidth <= 776 ? '200px' : '300px'; // Ajuste de altura en responsive
-            }
-        }
-    });
-}
+function updatePaginationInfo() {
+    const pageInfo = document.getElementById('pageInfo');
+    pageInfo.textContent = `Página ${currentPage} de ${Math.ceil(filteredProfessionals.length / recordsPerPage)}`;
 
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === Math.ceil(filteredProfessionals.length / recordsPerPage);
+}
 
 function changePage(direction) {
     currentPage += direction;
@@ -164,12 +138,20 @@ function changePage(direction) {
     updatePaginationInfo();
 }
 
-function updatePaginationInfo() {
-    const pageInfo = document.getElementById('pageInfo');
-    const totalPages = Math.ceil(filteredProfessionals.length / recordsPerPage);
+function showMapPopup(address) {
+    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
 
-    pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+    Swal.fire({
+        title: 'Ubicación',
+        html: `<iframe id="map" width="100%" height="300" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>`,
+        customClass: {
+            popup: 'swal2-popup-custom',
+            title: 'swal2-title-custom',
+            htmlContainer: 'swal2-html-custom',
+        }
+    });
+}
 
-    document.getElementById('prevPage').disabled = currentPage === 1;
-    document.getElementById('nextPage').disabled = currentPage === totalPages;
+function initMap() {
+    // Inicialización vacía si es necesario, ya que estamos usando la URL del iframe para mostrar los mapas.
 }
