@@ -25,7 +25,10 @@ function showMap(address) {
                        </div>`,
                 confirmButtonText: 'Cerrar',
                 didOpen: () => {
-                    document.getElementById('map').src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
+                    const mapIframe = document.getElementById('map');
+                    if (mapIframe) {
+                        mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
+                    }
                 },
                 customClass: {
                     popup: 'swal2-popup-custom',
@@ -47,6 +50,10 @@ function loadExcelFile() {
         .then(data => {
             const workbook = XLSX.read(data, { type: 'array' });
             professionals = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            
+            // Verifica la carga de datos
+            console.log('Datos cargados:', professionals);
+
             populateSpecialtyFilter();
             updateProfessionals();
         })
@@ -80,7 +87,7 @@ function updateProfessionals() {
     const selectedSpecialty = document.getElementById('specialtyFilter').value;
 
     filteredProfessionals = professionals.filter(p =>
-        (p.name.toLowerCase().includes(searchQuery)) &&
+        (p.name && p.name.toLowerCase().includes(searchQuery)) &&
         (selectedSpecialty === 'all' || p.specialty === selectedSpecialty)
     );
 
@@ -98,7 +105,7 @@ function renderProfessionals() {
     professionalList.innerHTML = '';
 
     paginatedProfessionals.forEach(professional => {
-        const fullAddress = `${professional.address}, ${professional.city}`;
+        const fullAddress = `${professional.address || ''}, ${professional.city || ''}`;
         const row = document.createElement('tr');
 
         row.innerHTML = `
@@ -183,14 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Llama a la función para cargar la API de Google Maps de manera asíncrona
 function loadGoogleMapsAPI() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (!existingScript) {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+    }
 }
 
-// Asegúrate de que no esté llamando a una función 'initMap' si no la necesitas
+// Evita errores si no necesitas la función initMap
 function initMap() {
     // Esta función puede estar vacía si no estás usando un mapa globalmente
 }
