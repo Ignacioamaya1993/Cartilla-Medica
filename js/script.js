@@ -1,3 +1,4 @@
+// Variables globales
 let professionals = [];
 let currentPage = 1;
 let recordsPerPage = 10;
@@ -5,16 +6,64 @@ let filteredProfessionals = [];
 const excelFilePath = 'profesionales.xlsx';
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadExcelFile();
+// Inicializa el mapa cuando se abre el pop-up
+function initMap(lat, lng) {
+    var mapOptions = {
+        zoom: 15,
+        center: new google.maps.LatLng(lat, lng),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
 
-    document.getElementById('recordsPerPage').addEventListener('change', updateRecordsPerPage);
-    document.getElementById('search').addEventListener('input', updateProfessionals);
-    document.getElementById('specialtyFilter').addEventListener('change', updateProfessionals);
-    document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
-    document.getElementById('nextPage').addEventListener('click', () => changePage(1));
-});
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+    // Marca la ubicación en el mapa
+    var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map: map
+    });
+
+    // Ajuste para asegurar que el mapa se muestre correctamente en dispositivos móviles
+    window.addEventListener('resize', function() {
+        google.maps.event.trigger(map, 'resize');
+        map.setCenter(new google.maps.LatLng(lat, lng));
+    });
+}
+
+// Llama a la función initMap cuando se necesita mostrar el mapa
+function showMap(address) {
+    var geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode({ 'address': address }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            var lat = results[0].geometry.location.lat();
+            var lng = results[0].geometry.location.lng();
+
+            // Imprime las coordenadas en la consola para verificar
+            console.log('Latitud:', lat, 'Longitud:', lng);
+
+            Swal.fire({
+                title: 'Ubicación',
+                html: `<div id="map-container" style="width: 100%; height: 400px;">
+                           <iframe id="map" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+                       </div>`,
+                confirmButtonText: 'Cerrar',
+                didOpen: () => {
+                    document.getElementById('map').src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
+                },
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                    htmlContainer: 'swal2-html-custom',
+                }
+            });
+        } else {
+            console.error('Geocode no tuvo éxito debido a: ' + status);
+            Swal.fire('Error', 'No se pudo mostrar la ubicación en el mapa', 'error');
+        }
+    });
+}
+
+// Función para cargar el archivo Excel
 function loadExcelFile() {
     fetch(excelFilePath)
         .then(response => response.arrayBuffer())
@@ -27,12 +76,14 @@ function loadExcelFile() {
         .catch(error => console.error('Error al leer el archivo Excel:', error));
 }
 
+// Función para actualizar la cantidad de registros por página
 function updateRecordsPerPage() {
     recordsPerPage = parseInt(document.getElementById('recordsPerPage').value);
     currentPage = 1;
     updateProfessionals();
 }
 
+// Función para poblar el filtro de especialidades
 function populateSpecialtyFilter() {
     const specialties = [...new Set(professionals.map(p => p.specialty))];
     const specialtyFilter = document.getElementById('specialtyFilter');
@@ -46,6 +97,7 @@ function populateSpecialtyFilter() {
     });
 }
 
+// Función para actualizar los profesionales mostrados
 function updateProfessionals() {
     const searchQuery = document.getElementById('search').value.toLowerCase();
     const selectedSpecialty = document.getElementById('specialtyFilter').value;
@@ -60,6 +112,7 @@ function updateProfessionals() {
     updatePaginationInfo();
 }
 
+// Función para renderizar los profesionales en la tabla
 function renderProfessionals() {
     const startIndex = (currentPage - 1) * recordsPerPage;
     const paginatedProfessionals = filteredProfessionals.slice(startIndex, startIndex + recordsPerPage);
@@ -89,7 +142,7 @@ function renderProfessionals() {
     document.querySelectorAll('.map-button').forEach(button => {
         button.addEventListener('click', function () {
             const address = this.getAttribute('data-address');
-            showMapPopup(address);
+            showMap(address);
         });
     });
 
@@ -124,6 +177,7 @@ function renderProfessionals() {
     }
 }
 
+// Función para actualizar la información de paginación
 function updatePaginationInfo() {
     const pageInfo = document.getElementById('pageInfo');
     pageInfo.textContent = `Página ${currentPage} de ${Math.ceil(filteredProfessionals.length / recordsPerPage)}`;
@@ -132,30 +186,31 @@ function updatePaginationInfo() {
     document.getElementById('nextPage').disabled = currentPage === Math.ceil(filteredProfessionals.length / recordsPerPage);
 }
 
+// Función para cambiar de página
 function changePage(direction) {
     currentPage += direction;
     renderProfessionals();
     updatePaginationInfo();
 }
 
-function showMapPopup(address) {
-    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
+// Inicializa la aplicación cuando se carga el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    loadExcelFile();
 
-    Swal.fire({
-        title: 'Ubicación',
-        html: `<iframe id="map" width="100%" height="400" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>`,
-        confirmButtonText: 'Cerrar',
-        customClass: {
-            popup: 'swal2-popup-custom',
-            title: 'swal2-title-custom',
-            htmlContainer: 'swal2-html-custom',
-        },
-        didOpen: () => {
-            document.getElementById('map').src = mapUrl;
-        }
-    });
+    document.getElementById('recordsPerPage').addEventListener('change', updateRecordsPerPage);
+    document.getElementById('search').addEventListener('input', updateProfessionals);
+    document.getElementById('specialtyFilter').addEventListener('change', updateProfessionals);
+    document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
+    document.getElementById('nextPage').addEventListener('click', () => changePage(1));
+});
+
+// Añade la API de Google Maps para cargarla de forma asíncrona
+function loadGoogleMapsAPI() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap`;
+    script.async = true;
+    document.body.appendChild(script);
 }
 
-function initMap() {
-    // Inicialización vacía si es necesario, ya que estamos usando la URL del iframe para mostrar los mapas.
-}
+// Llama a la función para cargar la API de Google Maps
+loadGoogleMapsAPI();
