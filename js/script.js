@@ -149,6 +149,7 @@ function renderProfessionals() {
                 console.log('Dirección completa (móvil):', fullAddress); // Log para verificar la dirección en móvil
 
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(fullAddress)}`;
+                console.log('Mapa URL (móvil):', mapUrl);
 
                 Swal.fire({
                     icon: 'info',
@@ -211,9 +212,9 @@ function loadGoogleMapsAPI() {
     }
 }
 
-// Evita errores si no necesitas la función initMap
 function initMap() {
-    // Esta función puede estar vacía si no estás usando un mapa globalmente
+    // Función de inicialización del mapa
+    // Esta función puede estar vacía si solo estás usando el iframe para mostrar el mapa
 }
 
 // Llama a la función para cargar la API de Google Maps

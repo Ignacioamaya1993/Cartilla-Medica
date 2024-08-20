@@ -2,7 +2,7 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Montserrat', sans-serif;
-    background: url('/img/fondo.png') no-repeat center center fixed; /* Cambia fixed a scroll */
+    background: url('/img/fondo.png') no-repeat center center scroll;
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@ body {
     width: 95%;
     margin: auto;
     padding-top: 20px;
-    flex: 1; /* Se expande para ocupar el espacio disponible */
+    flex: 1;
 }
 
 .header {
@@ -59,30 +59,23 @@ body {
 
 .controls label, .controls span {
     color: #fcfbfb;
-    /* Añadir sombra al texto para mejorar la legibilidad */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-/* Estilo específico para la columna "UBICACIÓN" */
 th:nth-child(6), td:nth-child(6) {
-    width: 100px; /* Ajusta el tamaño de la columna a tu preferencia */
-    text-align: center; /* Alineación del texto en el centro */
+    width: 100px;
+    text-align: center;
 }
 
-/* Estilo específico para la columna "TELEFONO" */
 th:nth-child(5), td:nth-child(5) {
-    width: 150px; /* Ajusta el tamaño de la columna a tu preferencia */
+    width: 150px;
 }
 
-
-
-/* Ajuste para pantallas grandes (navegador de PC) */
 @media (min-width: 769px) {
     .controls {
-        flex-direction: row; /* Los elementos se muestran en fila */
+        flex-direction: row;
     }
 
-    /* Estilo de los enlaces deshabilitados en pantallas grandes */
     .professional-link {
         text-decoration: none;
         color: inherit;
@@ -90,19 +83,18 @@ th:nth-child(5), td:nth-child(5) {
     }
 }
 
-/* Ajuste para pantallas pequeñas (responsive) */
 @media screen and (max-width:776px) {
-        .header {
+    .header {
         flex-direction: column;
         align-items: center;
-        #map {
-            height: 200px !important; /* Asegúrate de que el mapa no sea muy alto en pantallas pequeñas */
-        }
-        
     }
-
+    
+    #map {
+        height: 200px !important;
+    }
+    
     .controls-wrapper {
-        margin-bottom: 20px; /* Ajusta esta distancia para mover todo el bloque junto */
+        margin-bottom: 20px;
         margin-top: 20px;
     }
 
@@ -112,29 +104,27 @@ th:nth-child(5), td:nth-child(5) {
     }
 
     .controls {
-        flex-direction: column; /* Los elementos se muestran en columna */
-        gap: 15px; /* Ajusta la separación entre los controles en pantallas pequeñas */
+        flex-direction: column;
+        gap: 15px;
     }
 
     .controls select, .controls input {
-        width: 100%; /* Ocupa el 100% del ancho disponible */
+        width: 100%;
     }
 
-   
-    th:nth-child(4), td:nth-child(4), /* Ocultar columna de LOCALIDAD */
-    th:nth-child(5), td:nth-child(5),  /* Ocultar columna de TELEFONO */
-    th:nth-child(6), td:nth-child(6)  /* Ocultar columna de UBICACION */ {
+    th:nth-child(4), td:nth-child(4),
+    th:nth-child(5), td:nth-child(5),
+    th:nth-child(6), td:nth-child(6) {
         display: none;
     }
 
-    th:nth-child(1), /* Especialidad */
-    th:nth-child(2), /* Apellido y Nombre */
-    th:nth-child(3)  /* Dirección */ {
-        font-size: 12px; /* Ajusta el tamaño de la fuente según sea necesario */
+    th:nth-child(1),
+    th:nth-child(2),
+    th:nth-child(3) {
+        font-size: 12px;
         width: 20px;
     }
 
-    /* Estilo de los enlaces habilitados en pantallas pequeñas */
     .professional-link {
         text-decoration: underline;
         color: blue;
@@ -144,38 +134,38 @@ th:nth-child(5), td:nth-child(5) {
 
 table {
     width: 100%;
-    table-layout: fixed; /* Forzar a la tabla a ajustarse al ancho */
+    table-layout: fixed;
     border-collapse: collapse;
-    background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco más translúcido */
-    border-radius: 15px; /* Borde redondeado */
-    overflow: hidden; /* Asegura que el contenido de la tabla se ajuste al borde redondeado */
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 thead {
-    background-color: rgba(8, 195, 241, 0.9); /* Cabecera semitransparente */
+    background-color: rgba(8, 195, 241, 0.9);
     color: #ffffff;
 }
 
 th, td {
-    border: 1px solid rgba(221, 221, 221, 0.6); /* Bordes más translúcidos */
+    border: 1px solid rgba(221, 221, 221, 0.6);
     text-align: left;
     padding: 8px;
-    color: rgba(2, 0, 10, 0.9); /* Color del texto con un poco de transparencia */
-    word-wrap: break-word; /* Evitar desbordamiento de texto */
+    color: rgba(2, 0, 10, 0.9);
+    word-wrap: break-word;
 }
 
 tr:nth-child(even) {
-    background-color: rgba(245, 245, 245, 0.7); /* Fondo gris claro más translúcido */
+    background-color: rgba(245, 245, 245, 0.7);
 }
 
 tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco más translúcido */
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 #pagination {
     display: flex;
     justify-content: center;
-    align-items: center; /* Centra verticalmente la información de la paginación */
+    align-items: center;
     margin-top: 20px;
 }
 
@@ -190,8 +180,8 @@ tr:nth-child(odd) {
 }
 
 #pagination #pageInfo {
-    margin: 0 15px; /* Agrega margen para centrar mejor la información de paginación */
-    padding-top: 5px; /* Ajuste para centrar verticalmente */
+    margin: 0 15px;
+    padding-top: 5px;
     color: #ffffff;
 }
 
@@ -200,7 +190,6 @@ tr:nth-child(odd) {
     cursor: not-allowed;
 }
 
-/* Personalización del SweetAlert2 Popup */
 .swal2-popup-custom {
     font-size: 16px;
     border-radius: 10px;
@@ -222,7 +211,6 @@ tr:nth-child(odd) {
     margin: 10px 0;
 }
 
-/* Estilo para el mapa dentro del SweetAlert2 */
 #map {
     width: 100%;
     height: 200px;
@@ -235,7 +223,8 @@ tr:nth-child(odd) {
 }
 
 #map {
-    height: 80%; /* El mapa ocupa todo el alto del contenedor */
+    height: 80vh;
+    width: 100%;
 }
 
 /* Estilos para el footer */
