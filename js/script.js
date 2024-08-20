@@ -10,6 +10,9 @@ const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 function showMap(address) {
     var geocoder = new google.maps.Geocoder();
 
+    // Log para verificar la dirección
+    console.log('Dirección enviada a geocoder:', address);
+
     geocoder.geocode({ 'address': address }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             var lat = results[0].geometry.location.lat();
@@ -105,7 +108,10 @@ function renderProfessionals() {
     professionalList.innerHTML = '';
 
     paginatedProfessionals.forEach(professional => {
-        const fullAddress = `${professional.address || ''}, ${professional.city || ''}`;
+        // Construye la dirección completa con la ciudad y el país
+        const fullAddress = `${professional.address || ''}, ${professional.city || 'Olavarría'}, Buenos Aires, Argentina`;
+        console.log('Dirección completa:', fullAddress); // Log para verificar la construcción de fullAddress
+
         const row = document.createElement('tr');
 
         row.innerHTML = `
@@ -138,7 +144,11 @@ function renderProfessionals() {
                 const city = this.parentElement.nextElementSibling.nextElementSibling.textContent;
                 const phone = this.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
 
-                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(address)}`;
+                // Construye la dirección completa con la ciudad y el país para la versión móvil
+                const fullAddress = `${address}, ${city || 'Olavarría'}, Buenos Aires, Argentina`;
+                console.log('Dirección completa (móvil):', fullAddress); // Log para verificar la dirección en móvil
+
+                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(fullAddress)}`;
 
                 Swal.fire({
                     icon: 'info',
@@ -151,17 +161,11 @@ function renderProfessionals() {
                         <iframe id="map" width="100%" height="200" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>
                     `,
                     confirmButtonText: 'Cerrar',
-                didOpen: () => {
-                    const mapIframe = document.getElementById('map');
-                    if (mapIframe) {
-                        mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
+                    customClass: {
+                        popup: 'swal2-popup-custom',
+                        title: 'swal2-title-custom',
+                        htmlContainer: 'swal2-html-custom',
                     }
-                },
-                customClass: {
-                    popup: 'swal2-popup-custom',
-                    title: 'swal2-title-custom',
-                    htmlContainer: 'swal2-html-custom',
-                }
                 });
             });
         });
