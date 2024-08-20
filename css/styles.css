@@ -234,6 +234,10 @@ tr:nth-child(odd) {
     color: #444;
 }
 
+#map {
+    height: 80%; /* El mapa ocupa todo el alto del contenedor */
+}
+
 /* Estilos para el footer */
 .footer {
     display: flex;

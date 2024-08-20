@@ -20,7 +20,7 @@ function showMap(address) {
 
             Swal.fire({
                 title: 'Ubicación',
-                html: `<div id="map-container" style="width: 100%; height: 400px;">
+                html: `<div id="map-container" style="width: 100%; height: 300px;">
                            <iframe id="map" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
                        </div>`,
                 confirmButtonText: 'Cerrar',
