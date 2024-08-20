@@ -150,11 +150,18 @@ function renderProfessionals() {
                         <p><strong>Teléfono:</strong> ${phone}</p>
                         <iframe id="map" width="100%" height="200" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>
                     `,
-                    customClass: {
-                        popup: 'swal2-popup-custom',
-                        title: 'swal2-title-custom',
-                        htmlContainer: 'swal2-html-custom',
+                    confirmButtonText: 'Cerrar',
+                didOpen: () => {
+                    const mapIframe = document.getElementById('map');
+                    if (mapIframe) {
+                        mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
                     }
+                },
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                    htmlContainer: 'swal2-html-custom',
+                }
                 });
             });
         });
