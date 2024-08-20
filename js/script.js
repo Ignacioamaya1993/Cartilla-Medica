@@ -145,7 +145,7 @@ function renderProfessionals() {
                 const phone = this.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
 
                 // Construye la dirección completa con la ciudad y el país para la versión móvil
-                const fullAddress = `${address}, ${city || 'Olavarría'}, Buenos Aires, Argentina`;
+                const fullAddress = `${address}, ${city}, Buenos Aires, Argentina`;
                 console.log('Dirección completa (móvil):', fullAddress); // Log para verificar la dirección en móvil
 
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(fullAddress)}`;
