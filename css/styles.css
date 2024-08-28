@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
     padding: 0;
     margin: 0;
@@ -16,6 +17,7 @@ body {
     flex: 1;
 }
 
+/* Header */
 .header {
     display: flex;
     flex-wrap: wrap;
@@ -34,6 +36,12 @@ body {
     width: 150px;
     height: auto;
     margin-left: 20px;
+}
+
+/* Controls */
+.controls-wrapper {
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .controls {
@@ -57,7 +65,7 @@ body {
     max-width: 210px;
 }
 
-.controls label, .controls span {
+.controls label {
     color: #fcfbfb;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
 }
@@ -71,67 +79,16 @@ th:nth-child(5), td:nth-child(5) {
     width: 150px;
 }
 
-@media (min-width: 769px) {
-    .controls {
-        flex-direction: row;
-    }
-
-    .professional-link {
-        text-decoration: none;
-        color: inherit;
-        cursor: default;
-    }
+.updated-info {
+    text-align: left;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-shadow: 1px 1px 5px rgba(7, 0, 0, 0.9);
 }
 
-@media screen and (max-width:776px) {
-    .header {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    #map {
-        height: 200px !important;
-    }
-    
-    .controls-wrapper {
-        margin-bottom: 20px;
-        margin-top: 20px;
-    }
-
-    .header .logo {
-        margin-left: 0;
-        margin-top: 10px;
-    }
-
-    .controls {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .controls select, .controls input {
-        width: 100%;
-    }
-
-    th:nth-child(4), td:nth-child(4),
-    th:nth-child(5), td:nth-child(5),
-    th:nth-child(6), td:nth-child(6) {
-        display: none;
-    }
-
-    th:nth-child(1),
-    th:nth-child(2),
-    th:nth-child(3) {
-        font-size: 12px;
-        width: 20px;
-    }
-
-    .professional-link {
-        text-decoration: underline;
-        color: blue;
-        cursor: pointer;
-    }
-}
-
+/* Table */
 table {
     width: 100%;
     table-layout: fixed;
@@ -162,6 +119,7 @@ tr:nth-child(odd) {
     background-color: rgba(255, 255, 255, 0.7);
 }
 
+/* Pagination */
 #pagination {
     display: flex;
     justify-content: center;
@@ -190,44 +148,7 @@ tr:nth-child(odd) {
     cursor: not-allowed;
 }
 
-.swal2-popup-custom {
-    font-size: 16px;
-    border-radius: 10px;
-}
-
-.swal2-title-custom {
-    font-size: 20px;
-    font-weight: bold;
-    color: #4a4a4a;
-}
-
-.swal2-html-custom {
-    text-align: left;
-    color: #333;
-    font-size: 16px;
-}
-
-.swal2-html-custom p {
-    margin: 10px 0;
-}
-
-#map {
-    width: 100%;
-    height: 200px;
-    margin-top: 20px;
-}
-
-.swal2-html-custom p strong {
-    font-weight: bold;
-    color: #444;
-}
-
-#map {
-    height: 80vh;
-    width: 100%;
-}
-
-/* Estilos para el footer */
+/* Footer */
 .footer {
     display: flex;
     justify-content: space-between;
@@ -237,7 +158,7 @@ tr:nth-child(odd) {
     padding: 5px 30px;
     width: 100%;
     margin-top: 20px;
-    box-sizing: border-box; /* Asegura que el padding no empuje al footer fuera de la pantalla */
+    box-sizing: border-box;
     position: relative;
 }
 
@@ -259,11 +180,38 @@ tr:nth-child(odd) {
     display: inline-block;
 }
 
-.updated-info {
-    text-align: left;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-size: 16px;
-    text-shadow: 1px 1px 5px rgba(7, 0, 0, 0.9);
+/* Media Queries */
+@media screen and (max-width: 776px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .controls select, .controls input {
+        width: 100%;
+    }
+
+    th:nth-child(4), td:nth-child(4),
+    th:nth-child(5), td:nth-child(5),
+    th:nth-child(6), td:nth-child(6) {
+        display: none;
+
+    }
+    th:nth-child(1),
+    th:nth-child(2),
+    th:nth-child(3) {
+        font-size: 12px;
+        width: 20px;
+    }
+
+    .professional-link {
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+    }
 }

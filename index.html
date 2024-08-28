@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cartilla Médica Luz y Fuerza Olavarría</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -28,7 +28,6 @@
                 <label for="specialtyFilter">Especialidad</label>
                 <select id="specialtyFilter">
                     <option value="all">Todas</option>
-                    <!-- Especialidades dinámicas -->
                 </select>
                 <label for="search">Buscar:</label>
                 <input type="text" id="search" placeholder="Nombre del profesional">
@@ -37,7 +36,6 @@
             <div class="updated-info">
                 Datos actualizados a través de la página del Círculo Médico Olavarría al día 01/09/2024.
             </div>
-            
         </div>
         <table>
             <thead>
@@ -50,9 +48,7 @@
                     <th>UBICACIÓN</th>
                 </tr>
             </thead>
-            <tbody id="professionalList">
-                <!-- Filas dinámicas -->
-            </tbody>
+            <tbody id="professionalList"></tbody>
         </table>
         <div id="pagination">
             <button id="prevPage">Anterior</button>
@@ -73,8 +69,7 @@
             </a>
         </div>
     </footer>
-
     <script src="js/script.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_AQUI&callback=initMap"></script>
 </body>
 </html>
