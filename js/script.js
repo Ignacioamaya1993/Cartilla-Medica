@@ -1,9 +1,10 @@
+import { supabase } from "./supabase.js";
+
 // Variables globales
 let professionals = [];
 let currentPage = 1;
 let recordsPerPage = 10;
 let filteredProfessionals = [];
-const excelFilePath = 'profesionales.xlsx';
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
 // Llama a la función initMap cuando se necesita mostrar el mapa
@@ -46,21 +47,24 @@ function showMap(address) {
     });
 }
 
-// Función para cargar el archivo Excel
-function loadExcelFile() {
-    fetch(excelFilePath)
-        .then(response => response.arrayBuffer())
-        .then(data => {
-            const workbook = XLSX.read(data, { type: 'array' });
-            professionals = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-            
-            // Verifica la carga de datos
-            console.log('Datos cargados:', professionals);
+async function loadProfessionalsFromDB() {
+    const { data, error } = await supabase
+        .from('profesionales')
+        .select('*')
+        .order('name');
 
-            populateSpecialtyFilter();
-            updateProfessionals();
-        })
-        .catch(error => console.error('Error al leer el archivo Excel:', error));
+    if (error) {
+        console.error('Error cargando profesionales:', error);
+        Swal.fire('Error', 'No se pudieron cargar los profesionales', 'error');
+        return;
+    }
+
+    professionals = data;
+
+    console.log('Profesionales cargados desde Supabase:', professionals);
+
+    populateSpecialtyFilter();
+    updateProfessionals();
 }
 
 // Función para actualizar la cantidad de registros por página
@@ -115,7 +119,7 @@ function renderProfessionals() {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-            <td>${professional.specialty || ''}</td>
+            <td>${professional.categorias?.nombre || ''}</td>
             <td><span class="professional-link">${professional.name || ''}</span></td>
             <td>${professional.address || ''}</td>
             <td>${professional.city || ''}</td>
@@ -191,7 +195,7 @@ function changePage(direction) {
 
 // Inicializa la aplicación cuando se carga el DOM
 document.addEventListener('DOMContentLoaded', () => {
-    loadExcelFile();
+loadProfessionalsFromDB();
 
     document.getElementById('recordsPerPage').addEventListener('change', updateRecordsPerPage);
     document.getElementById('search').addEventListener('input', updateProfessionals);
