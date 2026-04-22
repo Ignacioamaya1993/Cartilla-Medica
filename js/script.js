@@ -50,7 +50,12 @@ function showMap(address) {
 async function loadProfessionalsFromDB() {
     const { data, error } = await supabase
         .from('profesionales')
-        .select('*')
+        .select(`
+            *,
+            categorias (
+                nombre
+            )
+        `)
         .order('name');
 
     if (error) {
@@ -76,9 +81,17 @@ function updateRecordsPerPage() {
 
 // Función para poblar el filtro de especialidades
 function populateSpecialtyFilter() {
-    const specialties = [...new Set(professionals.map(p => p.specialty))];
+    const specialties = [
+        ...new Set(
+            professionals
+                .map(p => p.categorias?.nombre)
+                .filter(Boolean)
+        )
+    ];
+
     const specialtyFilter = document.getElementById('specialtyFilter');
-    specialtyFilter.innerHTML = '<option value="all">TODAS LAS ESPECIALIDADES</option>';
+    specialtyFilter.innerHTML =
+        '<option value="all">TODAS LAS ESPECIALIDADES</option>';
 
     specialties.forEach(specialty => {
         const option = document.createElement('option');
@@ -95,7 +108,7 @@ function updateProfessionals() {
 
     filteredProfessionals = professionals.filter(p =>
         (p.name && p.name.toLowerCase().includes(searchQuery)) &&
-        (selectedSpecialty === 'all' || p.specialty === selectedSpecialty)
+        (selectedSpecialty === 'all' || p.categorias?.nombre === selectedSpecialty)
     );
 
     currentPage = 1;
