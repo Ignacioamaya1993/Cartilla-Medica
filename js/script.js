@@ -12,15 +12,11 @@ function showMap(address) {
     var geocoder = new google.maps.Geocoder();
 
     // Log para verificar la dirección
-    console.log('Dirección enviada a geocoder:', address);
 
     geocoder.geocode({ 'address': address }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             var lat = results[0].geometry.location.lat();
             var lng = results[0].geometry.location.lng();
-
-            // Imprime las coordenadas en la consola para verificar
-            console.log('Latitud:', lat, 'Longitud:', lng);
 
             Swal.fire({
                 title: 'Ubicación',
@@ -65,8 +61,6 @@ async function loadProfessionalsFromDB() {
     }
 
     professionals = data;
-
-    console.log('Profesionales cargados desde Supabase:', professionals);
 
     populateSpecialtyFilter();
     updateProfessionals();
@@ -127,7 +121,6 @@ function renderProfessionals() {
     paginatedProfessionals.forEach(professional => {
         // Construye la dirección completa con la ciudad y el país
         const fullAddress = `${professional.address || ''}, ${professional.city || 'Olavarría'}, Buenos Aires, Argentina`;
-        console.log('Dirección completa:', fullAddress); // Log para verificar la construcción de fullAddress
 
         const row = document.createElement('tr');
 
@@ -163,10 +156,8 @@ function renderProfessionals() {
 
                 // Construye la dirección completa con la ciudad y el país para la versión móvil
                 const fullAddress = `${address}, ${city}, Buenos Aires, Argentina`;
-                console.log('Dirección completa (móvil):', fullAddress); // Log para verificar la dirección en móvil
 
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(fullAddress)}`;
-                console.log('Mapa URL (móvil):', mapUrl);
 
                 Swal.fire({
                     icon: 'info',
