@@ -229,6 +229,11 @@ tr:nth-child(odd) {
     vertical-align: middle;
 }
 
+.professional-details-popup .digital-certificate-badge {
+    display: block;
+    text-align: center;
+}
+
 @media (max-width: 776px) {
     .filter-pill {
         margin: 4px 0;
