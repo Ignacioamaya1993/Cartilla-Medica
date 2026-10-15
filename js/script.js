@@ -116,31 +116,57 @@ function updateProfessionals() {
 }
 
 // Función para renderizar los profesionales en la tabla
+
 function renderProfessionals() {
     const startIndex = (currentPage - 1) * recordsPerPage;
-    const paginatedProfessionals = filteredProfessionals.slice(startIndex, startIndex + recordsPerPage);
+    const paginatedProfessionals = filteredProfessionals.slice(
+        startIndex,
+        startIndex + recordsPerPage
+    );
 
     const professionalList = document.getElementById('professionalList');
     professionalList.innerHTML = '';
 
     paginatedProfessionals.forEach(professional => {
-        // Construye la dirección completa con la ciudad y el país
-        const fullAddress = `${professional.address || ''}, ${professional.city || 'Olavarría'}, Buenos Aires, Argentina`;
-
         const row = document.createElement('tr');
 
+        row.innerHTML = `
+            <td>${escapeHtml(professional.categorias?.nombre || '')}</td>
+            <td>
+                <span
+                    class="professional-link"
+                    role="button"
+                    tabindex="0"
+                    title="Tocá para ver los datos completos"
+                >${escapeHtml(professional.name || '')}</span>
 
-row.innerHTML = `
-    <td>${professional.categorias?.nombre || ''}</td>
-    <td>
-        <span class="professional-link">${professional.name || ''}</span>
-        ${professional.certificado_medico_digital === true
-            ? '<span class="digital-certificate-badge">✓ Certificado Médico Digital</span>'
-            : ''}
-    </td>
-    <td>${professional.address || ''}</td>
-    <td>${professional.city || ''}</td>
-    <td>${professional.phone || ''}</td>`;
+                ${professional.certificado_medico_digital === true
+                    ? '<span class="digital-certificate-badge">✓ Certificado Médico Digital</span>'
+                    : ''}
+            </td>
+            <td>${escapeHtml(professional.address || '')}</td>
+            <td>${escapeHtml(professional.city || '')}</td>
+            <td>${escapeHtml(professional.phone || '')}</td>
+        `;
+
+        const nameLink = row.querySelector('.professional-link');
+
+        const openDetails = () => {
+            if (window.innerWidth > 776) return;
+            showProfessionalDetails(professional);
+        };
+
+        nameLink.addEventListener('click', openDetails);
+
+        nameLink.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openDetails();
+            }
+        });
+
+        professionalList.appendChild(row);
+    });
 
 /*
 Código original de ubicación, guardado temporalmente:
@@ -151,9 +177,6 @@ Código original de ubicación, guardado temporalmente:
     </button>
 </td>
 */
-        
-        professionalList.appendChild(row);
-    });
 
     /*document.querySelectorAll('.map-button').forEach(button => {
         button.addEventListener('click', function () {
@@ -196,6 +219,73 @@ Código original de ubicación, guardado temporalmente:
         });
     }*/
 }
+
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function showProfessionalDetails(professional) {
+    const specialty = professional.categorias?.nombre || 'No especificada';
+    const name = professional.name || 'No informado';
+    const address = professional.address || 'No informada';
+    const city = professional.city || 'No informada';
+    const phone = professional.phone || 'No informado';
+
+    const digitalCertificate =
+        professional.certificado_medico_digital === true;
+
+    Swal.fire({
+        icon: 'info',
+        title: name,
+        html: `
+            <div class="professional-details-popup">
+                <p>
+                    <strong>Especialidad:</strong><br>
+                    ${escapeHtml(specialty)}
+                </p>
+
+                <p>
+                    <strong>Apellido y nombre:</strong><br>
+                    ${escapeHtml(name)}
+                </p>
+
+                <p>
+                    <strong>Dirección:</strong><br>
+                    ${escapeHtml(address)}
+                </p>
+
+                <p>
+                    <strong>Localidad:</strong><br>
+                    ${escapeHtml(city)}
+                </p>
+
+                <p>
+                    <strong>Teléfono:</strong><br>
+                    ${escapeHtml(phone)}
+                </p>
+
+                ${digitalCertificate ? `
+                    <p class="digital-certificate-badge">
+                        ✓ Ofrece Certificado Médico Digital
+                    </p>
+                ` : ''}
+            </div>
+        `,
+        confirmButtonText: 'Cerrar',
+        customClass: {
+            popup: 'swal2-popup-custom',
+            title: 'swal2-title-custom',
+            htmlContainer: 'swal2-html-custom'
+        }
+    });
+}
+
 
 // Función para actualizar la información de paginación
 function updatePaginationInfo() {
