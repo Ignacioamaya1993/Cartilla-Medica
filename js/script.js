@@ -5,6 +5,7 @@ let professionals = [];
 let currentPage = 1;
 let recordsPerPage = 10;
 let filteredProfessionals = [];
+let digitalCertificateOnly = false;
 const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
 
 // Llama a la función initMap cuando se necesita mostrar el mapa
@@ -81,9 +82,10 @@ function populateSpecialtyFilter() {
                 .map(p => p.categorias?.nombre)
                 .filter(Boolean)
         )
-    ];
+    ].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 
     const specialtyFilter = document.getElementById('specialtyFilter');
+
     specialtyFilter.innerHTML =
         '<option value="all">TODAS LAS ESPECIALIDADES</option>';
 
@@ -102,7 +104,10 @@ function updateProfessionals() {
 
     filteredProfessionals = professionals.filter(p =>
         (p.name && p.name.toLowerCase().includes(searchQuery)) &&
-        (selectedSpecialty === 'all' || p.categorias?.nombre === selectedSpecialty)
+        (selectedSpecialty === 'all' ||
+            p.categorias?.nombre === selectedSpecialty) &&
+        (!digitalCertificateOnly ||
+            p.certificado_medico_digital === true)
     );
 
     currentPage = 1;
@@ -124,9 +129,15 @@ function renderProfessionals() {
 
         const row = document.createElement('tr');
 
+
 row.innerHTML = `
     <td>${professional.categorias?.nombre || ''}</td>
-    <td><span class="professional-link">${professional.name || ''}</span></td>
+    <td>
+        <span class="professional-link">${professional.name || ''}</span>
+        ${professional.certificado_medico_digital === true
+            ? '<span class="digital-certificate-badge">✓ Certificado Médico Digital</span>'
+            : ''}
+    </td>
     <td>${professional.address || ''}</td>
     <td>${professional.city || ''}</td>
     <td>${professional.phone || ''}</td>`;
@@ -205,6 +216,26 @@ function changePage(direction) {
 // Inicializa la aplicación cuando se carga el DOM
 document.addEventListener('DOMContentLoaded', () => {
 loadProfessionalsFromDB();
+
+const digitalCertificateFilter =
+    document.getElementById('digitalCertificateFilter');
+
+digitalCertificateFilter.addEventListener('click', () => {
+    digitalCertificateOnly = !digitalCertificateOnly;
+
+    digitalCertificateFilter.classList.toggle(
+        'active',
+        digitalCertificateOnly
+    );
+
+    digitalCertificateFilter.setAttribute(
+        'aria-pressed',
+        String(digitalCertificateOnly)
+    );
+
+    updateProfessionals();
+});
+
 
     document.getElementById('recordsPerPage').addEventListener('change', updateRecordsPerPage);
     document.getElementById('search').addEventListener('input', updateProfessionals);

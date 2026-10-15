@@ -180,6 +180,66 @@ tr:nth-child(odd) {
     display: inline-block;
 }
 
+
+/* Filtro de Certificado Médico Digital */
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid #b8c5d1;
+    border-radius: 24px;
+    background: #fff;
+    color: #344054;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s,
+                border-color 0.2s;
+}
+
+.filter-pill:hover {
+    border-color: #16845b;
+}
+
+.filter-pill.active {
+    background: #16845b;
+    border-color: #16845b;
+    color: #fff;
+}
+
+.pill-icon {
+    font-weight: 700;
+}
+
+/* Distintivo en la fila del profesional */
+.digital-certificate-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 5px 0 0 8px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #e5f5ec;
+    color: #176b45;
+    font-size: 11px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+@media (max-width: 776px) {
+    .filter-pill {
+        margin: 4px 0;
+    }
+
+    .digital-certificate-badge {
+        display: table;
+        margin: 5px 0 0;
+    }
+}
+
 /* Media Queries */
 @media screen and (max-width: 776px) {
     .header {
