@@ -60,8 +60,28 @@ async function loadProfessionalsFromDB() {
         Swal.fire('Error', 'No se pudieron cargar los profesionales', 'error');
         return;
     }
+    professionals = data.sort((a, b) => {
+        const specialtyA = a.categorias?.nombre || '';
+        const specialtyB = b.categorias?.nombre || '';
 
-    professionals = data;
+        // Primero: ordenar por especialidad
+        const specialtyComparison = specialtyA.localeCompare(
+            specialtyB,
+            'es',
+            { sensitivity: 'base' }
+        );
+
+        if (specialtyComparison !== 0) {
+            return specialtyComparison;
+        }
+
+        // Segundo: dentro de la especialidad, ordenar por profesional
+        return (a.name || '').localeCompare(
+            b.name || '',
+            'es',
+            { sensitivity: 'base' }
+        );
+    });
 
     populateSpecialtyFilter();
     updateProfessionals();
