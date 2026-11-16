@@ -30,3 +30,32 @@ Para activarlo:
 No se ha activado esta tarea remota solo por crear el archivo local. No reactiva un proyecto que ya este pausado: primero restaurarlo desde Supabase. Generar actividad diaria puede reducir las pausas por inactividad del plan gratuito, pero no es una garantia contractual.
 
 En repositorios publicos, GitHub desactiva las ejecuciones programadas tras 60 dias sin actividad en el repositorio. Consultar Supabase sin cambios no genera commits y no evita esa limitacion: revisar Actions y reactivar la tarea si se deshabilita. El JSON sigue disponible aun si falla la automatizacion.
+
+## Revision semanal con el Circulo Medico
+
+El workflow .github/workflows/review-directory.yml se ejecuta los lunes a las 10:41 de Argentina (13:41 UTC) y tambien manualmente desde Actions > Revisar diferencias con Circulo Medico > Run workflow. Se activa al subir estos archivos a la rama predeterminada; crear los archivos locales no activa la tarea remota.
+
+Lee https://cmolavarria.com.ar/listado-de-profesionales/ una sola vez por revision y compara direccion y telefono con la cartilla. No escribe en Supabase, no modifica categorias ni certificados digitales y no agrega ni elimina profesionales. Si Supabase no responde, usa el JSON publicado en el repositorio e identifica su fecha en el informe.
+
+Al terminar, abrir la ejecucion en Actions y descargar el artifact revision-profesionales. Descomprimir y abrir revision-profesionales.html en el navegador. Tambien incluye JSON para analizar los resultados. Los artifacts se conservan 30 dias; no se publican en Vercel. En un repositorio publico, tratar los artifacts como informacion publica.
+
+Estados:
+
+- diferencias: nombre normalizado unico en ambos listados, con direccion o telefono distintos. Revisar antes de editar.
+- ambiguo: nombre repetido en alguno de los listados; confirmar consultorio, especialidad e identidad.
+- posible_coincidencia: nombres que comparten palabras, nunca considerados identidad confirmada.
+- no_encontrado: no hay una coincidencia suficiente; no implica baja de la cartilla.
+- origen_incompleto: la fuente tiene campos vacios. Nunca se propone borrar un dato por este motivo.
+- sin_diferencias: no se detectaron cambios de contacto con la normalizacion aplicada; no certifica vigencia.
+
+Se ignoran tildes, puntuacion, espacios y algunas abreviaturas de direccion. Los prefijos telefonicos distintos pueden producir diferencias para revision. Piso, departamento y consultorios requieren validacion humana. Los registros externos que no estan en tu cartilla no se incorporan.
+
+Para generar un informe local, desde la raiz del repositorio:
+
+    node --use-system-ca scripts/review-directory.mjs
+
+Se guarda en reports/ (carpeta ignorada por Git). Pruebas del comparador:
+
+    node --test scripts/directory-comparison.test.mjs
+
+Si cambia el formato del sitio de origen, hay errores de conexion o la tabla parece incompleta, la tarea falla sin actualizar datos. Revisar los logs. La limitacion de 60 dias sin actividad para tareas programadas de repositorios publicos tambien aplica a esta revision.
