@@ -40,12 +40,13 @@ try {
     const counts = Object.fromEntries(['diferencias', 'ambiguo', 'posible_coincidencia', 'no_encontrado', 'origen_incompleto', 'sin_diferencias']
         .map(status => [status, results.filter(row => row.status === status).length]));
     const report = { version: 1, generatedAt: new Date().toISOString(), sourceUrl: SOURCE_URL,
-        currentSource, snapshotDate, currentCount: current.length, externalCount: external.length, counts, results };
+        currentSource, snapshotDate, currentCount: current.length, externalCount: external.length,
+        unmatchedCount: current.length - results.length, counts, results };
     const output = new URL('../reports/', import.meta.url);
     await mkdir(output, { recursive: true });
     await writeFile(new URL('revision-profesionales.html', output), renderReport(report), 'utf8');
     await writeFile(new URL('revision-profesionales.json', output), JSON.stringify(report, null, 2) + '\n', 'utf8');
-    const summary = `## Revisión de profesionales\n\nCartilla: ${current.length}. Origen externo: ${external.length}.\n\n` +
+    const summary = `## Revisión de profesionales\n\nCartilla: ${current.length}. Origen externo: ${external.length}.\nSolo coincidencias de profesional y especialidad: ${results.length}. Sin coincidencia conjunta (excluidos): ${current.length - results.length}.\n\n` +
         Object.entries(counts).map(([status, count]) => `- ${status}: ${count}`).join('\n') +
         `\n\n${currentSource}${snapshotDate ? ` (${snapshotDate})` : ''}.\n\n` +
         'No se modificaron datos. Descargá el artifact **revision-profesionales** de esta ejecución y abrí revision-profesionales.html.\n';

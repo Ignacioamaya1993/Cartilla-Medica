@@ -1,3 +1,5 @@
+import { sameProfessional, equivalentReviewValue } from './comparison-rules.js';
+
 export const REVIEW_FIELDS = ['name', 'specialty', 'address', 'phone'];
 export const FIELD_LABELS = { name: 'Nombre', specialty: 'Especialidad', address: 'Dirección', phone: 'Teléfono' };
 
@@ -14,7 +16,10 @@ export function validateReport(report) {
             throw new Error('El informe contiene un caso con formato inválido.');
         }
     }
-    return report;
+    // Apply the current matching rule to old downloaded reports as well.
+    return { ...report, results: report.results.map(row => ({ ...row,
+        candidates: row.candidates.filter(candidate => sameProfessional(row.current, candidate))
+    })).filter(row => row.candidates.length) };
 }
 
 export function caseKey(row) {
@@ -50,9 +55,45 @@ export function buildChanges(record, fields, values, categories) {
             const category = categories.find(item => String(item.id) === value);
             if (!category) throw new Error('Elegí una especialidad existente en tu cartilla.');
             if (String(record.categoria_id) !== value) changes.categoria_id = category.id;
-        } else if (record[field] !== value) {
+        } else if (record[field] !== value && (field !== 'address' || !equivalentReviewValue(field, record[field], value))) {
             changes[field] = value;
         }
     }
     return changes;
+}
+
+export function sourceIdentity(candidate) {
+    if (!candidate) return '__no_match__';
+    return String(candidate.name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim().replace(/\s+/g, ' ').replace(/^(DR|DRA) /, '');
+}
+
+export function reviewValue(record, field, source = false) {
+    return String((field === 'specialty' && !source ? record?.categorias?.nombre : record?.[field]) ?? '');
+}
+
+export function rememberedFields(record, candidate, remembered) {
+    const result = new Map();
+    if (!record) return result;
+    const identity = sourceIdentity(candidate);
+    for (const entry of remembered) {
+        if (!entry.revoked_at && String(entry.profesional_id) === String(record.id) && entry.source_identity === identity &&
+            REVIEW_FIELDS.includes(entry.field) && entry.current_value === reviewValue(record, entry.field) &&
+            entry.source_value === reviewValue(candidate, entry.field, true)) result.set(entry.field, entry);
+    }
+    return result;
+}
+
+export function caseRemembered(row, record, remembered) {
+    if (!record) return false;
+    return (row.candidates.length ? row.candidates : [null]).every(candidate => {
+        const kept = rememberedFields(record, candidate, remembered);
+        const different = REVIEW_FIELDS.filter(field => !equivalentReviewValue(field, reviewValue(record, field), reviewValue(candidate, field, true)));
+        const required = different.length ? different : REVIEW_FIELDS;
+        return required.every(field => kept.has(field));
+    });
+}
+export function hasReviewDifferences(row) {
+    return row.candidates.some(candidate => REVIEW_FIELDS.some(field =>
+        !equivalentReviewValue(field, reviewValue(row.current, field), reviewValue(candidate, field, true))));
 }

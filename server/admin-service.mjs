@@ -1,4 +1,6 @@
 import { ENV } from '../js/env.js';
+import { createHash } from 'node:crypto';
+import { REVIEW_FIELDS, sourceIdentity, reviewValue } from '../js/review-model.js';
 
 export class HttpError extends Error {
     constructor(status, message) { super(message); this.status = status; }
@@ -35,10 +37,10 @@ export async function authorize(header, config, transport = fetch) {
     return user;
 }
 
-export async function listRecords(config, table, select, transport = fetch) {
+export async function listRecords(config, table, select, transport = fetch, filters = {}) {
     const result = [];
     while (true) {
-        const params = new URLSearchParams({ select, order: 'id.asc', limit: '100', offset: String(result.length) });
+        const params = new URLSearchParams({ ...filters, select, order: 'id.asc', limit: '100', offset: String(result.length) });
         const page = await request(config, `/rest/v1/${table}?${params}`, {}, transport);
         if (!Array.isArray(page)) throw new HttpError(502, 'Respuesta inesperada de la base.');
         if (!page.length) return result;
@@ -97,4 +99,52 @@ export async function applyUpdate(body, config, user, transport = fetch) {
     if (!Array.isArray(updated) || updated.length !== 1) throw new HttpError(409, 'El profesional cambió desde que lo revisaste. Recargá los datos antes de guardar.');
     const receipt = { at: new Date().toISOString(), actor: user.id, id: body.id, before: body.before, changes: body.changes, after: updated[0] };
     return receipt;
+}
+
+export async function rememberDecision(body, config, user, transport = fetch) {
+    const allowed = ['action', 'id', 'before', 'source', 'fields'];
+    if (!body || Object.keys(body).some(key => !allowed.includes(key)) || body.action !== 'remember' ||
+        !Array.isArray(body.fields) || !body.fields.length || body.fields.length > 4 ||
+        new Set(body.fields).size !== body.fields.length || body.fields.some(field => !REVIEW_FIELDS.includes(field))) {
+        throw new HttpError(400, 'Seleccioná campos válidos para conservar.');
+    }
+    // Reuse the full original-record validation without performing an update.
+    validateUpdate({ id: body.id, before: body.before, changes: { name: 'validation-only' } });
+    const source = body.source;
+    if (source !== null && (!source || typeof source !== 'object' || Array.isArray(source) ||
+        typeof source.name !== 'string' || !source.name.trim() || !sourceIdentity(source) ||
+        Object.keys(source).some(key => !REVIEW_FIELDS.includes(key)) ||
+        REVIEW_FIELDS.some(field => source[field] != null && (typeof source[field] !== 'string' || source[field].length > 2000)))) {
+        throw new HttpError(400, 'Los datos del profesional de origen no son válidos.');
+    }
+    const params = new URLSearchParams({ id: `eq.${body.id}`, select: 'id,name,address,city,phone,categoria_id,categorias(nombre)' });
+    for (const field of beforeFields) params.set(field, equality(body.before[field]));
+    const records = await request(config, `/rest/v1/profesionales?${params}`, {}, transport);
+    if (!Array.isArray(records) || records.length !== 1) throw new HttpError(409, 'El profesional cambió. Recargá los datos antes de conservar esta decisión.');
+    const record = records[0];
+    const now = new Date().toISOString();
+    const entries = body.fields.map(field => {
+        const identity = sourceIdentity(source);
+        const current = reviewValue(record, field);
+        const found = reviewValue(source, field, true);
+        const fingerprint = createHash('sha256').update(JSON.stringify([String(record.id), field, identity, current, found])).digest('hex');
+        return { profesional_id: record.id, field, source_identity: identity, current_value: current, source_value: found,
+            fingerprint, decided_by: user.id, decided_at: now, revoked_at: null };
+    });
+    const decisions = await request(config, '/rest/v1/revision_decisiones?on_conflict=fingerprint', {
+        method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify(entries)
+    }, transport);
+    if (!Array.isArray(decisions) || decisions.length !== entries.length) throw new HttpError(502, 'No se pudo confirmar el guardado de las decisiones.');
+    return { decisions };
+}
+
+export async function forgetDecision(body, config, transport = fetch) {
+    if (!body || body.action !== 'forget' || !validId(body.decisionId) ||
+        Object.keys(body).some(key => !['action', 'decisionId'].includes(key))) throw new HttpError(400, 'Decisión inválida.');
+    const revokedAt = new Date().toISOString();
+    const params = new URLSearchParams({ id: `eq.${body.decisionId}`, revoked_at: 'is.null', select: 'id' });
+    await request(config, `/rest/v1/revision_decisiones?${params}`, {
+        method: 'PATCH', body: JSON.stringify({ revoked_at: revokedAt })
+    }, transport);
+    return { decisionId: body.decisionId, revokedAt };
 }

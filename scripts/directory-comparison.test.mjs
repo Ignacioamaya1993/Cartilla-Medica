@@ -40,15 +40,64 @@ test('duplicate names in either directory are ambiguous', () => {
     assert(compareDirectories([local, local], [source]).every(row => row.status === 'ambiguo'));
 });
 
-test('partial names are candidates only and absent names are not removals', () => {
+test('compatible shortened names are suggested; absent professionals and different specialties are excluded', () => {
     assert.equal(compareDirectories([local], [{ ...source, name: 'PEREZ MARIA' }])[0].status, 'posible_coincidencia');
-    assert.equal(compareDirectories([local], [{ ...source, name: 'GOMEZ JUAN' }])[0].status, 'no_encontrado');
+    assert.deepEqual(compareDirectories([local], [{ ...source, name: 'GOMEZ JUAN' }]), []);
+    assert.deepEqual(compareDirectories([local], [{ ...source, specialty: 'CLINICA MEDICA' }]), []);
+    assert.deepEqual(compareDirectories([{ ...local, categorias: null }], [source]), []);
+});
+
+test('Aguerre Francisco matches longer given names in either order with the same specialty', () => {
+    for (const name of ['AGUERRE FRANCISCO HORACIO', 'AGUERRE HORACIO FRANCISCO']) {
+        for (const reverse of [false, true]) {
+            const current = { ...local, name: reverse ? name : 'AGUERRE FRANCISCO' };
+            const candidate = { ...source, name: reverse ? 'AGUERRE FRANCISCO' : name };
+            assert.equal(compareDirectories([current], [candidate])[0].status, 'posible_coincidencia');
+            assert.deepEqual(compareDirectories([current], [{ ...candidate, specialty: 'OTRA ESPECIALIDAD' }]), []);
+        }
+    }
+    assert.deepEqual(compareDirectories([{ ...local, name: 'AGUERRE FRANCISCO HORACIO' }], [{ ...source, name: 'AGUERRE FRANCISCO MARIO' }]), []);
+    assert.deepEqual(compareDirectories([{ ...local, name: 'AGUERRE' }], [{ ...source, name: 'AGUERRE FRANCISCO' }]), []);
+    assert.deepEqual(compareDirectories([{ ...local, name: 'AGUERRE FRANCISCO' }], [{ ...source, name: 'GOMEZ FRANCISCO AGUERRE' }]), []);
+});
+
+test('multiple compatible names are presented together for manual identity confirmation', () => {
+    const result = compareDirectories([{ ...local, name: 'AGUERRE FRANCISCO' }], [
+        { ...source, name: 'AGUERRE FRANCISCO HORACIO' }, { ...source, name: 'AGUERRE FRANCISCO MARIO' }
+    ])[0];
+    assert.equal(result.status, 'ambiguo');
+    assert.equal(result.candidates.length, 2);
+});
+
+test('the same person in two specialties is compared independently', () => {
+    const other = { ...local, categorias: { nombre: 'CLINICA MEDICA' }, address: 'OTRA 50', phone: '999999' };
+    const results = compareDirectories([local, other], [source, { ...source, specialty: 'CLINICA MEDICA', address: 'OTRA 50', phone: '999999' }]);
+    assert.equal(results.length, 2);
+    assert(results.every(row => row.status === 'sin_diferencias'));
+    assert(results.every(row => row.candidates.length === 1));
+    assert.equal(results[1].candidates[0].specialty, 'CLINICA MEDICA');
+});
+
+test('a full-name word-order difference is allowed only with the same specialty', () => {
+    const results = compareDirectories([{ ...local, name: 'ALAMO JOSE ALEJANDRO' }], [{ ...source, name: 'ALAMO ALEJANDRO JOSE' }]);
+    assert.equal(results.length, 1);
+    assert.equal(results[0].status, 'sin_diferencias');
+});
+
+test('numbering markers do not create address differences, including without a space', () => {
+    for (const address of ['MORENO Nº 2647', 'MORENO N° 2647', 'MORENO Nº2647', 'MORENO N°2647', 'MORENO No. 2647', 'MORENO N.º 2647']) {
+        const result = compareDirectories([{ ...local, address: 'MORENO 2647' }], [{ ...source, address }])[0];
+        assert.deepEqual(result.changes, [], address);
+    }
+    for (const address of ['MORENO N° 2648', 'MORENO Nº 2647 2º PISO', 'MORENO Nº 2647 DEPTO A']) {
+        assert.equal(compareDirectories([{ ...local, address: 'MORENO 2647' }], [{ ...source, address }])[0].changes[0].field, 'address');
+    }
 });
 
 test('HTML escapes source data and does not mutate input', () => {
     const current = [{ ...local, name: '<img src=x onerror=alert(1)>' }];
     const before = JSON.stringify(current);
-    const results = compareDirectories(current, []);
+    const results = compareDirectories(current, [{ ...source, name: current[0].name, address: 'OTRA 100' }]);
     const html = renderReport({ results, counts: { no_encontrado: 1 }, generatedAt: '2026-11-16', currentSource: 'Test' });
     assert(!html.includes('<img src=x'));
     assert(html.includes('&lt;img'));

@@ -12,11 +12,12 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), { status
 
 test('the requested partial update changes only address and phone', () => {
     const values = proposedValues(candidate, categories);
-    assert.deepEqual(buildChanges(professional, ['address', 'phone'], values, categories), body().changes);
+    assert.deepEqual(buildChanges(professional, ['address', 'phone'], values, categories), { phone: candidate.phone });
     assert.deepEqual(buildChanges(professional, ['name', 'specialty', 'address', 'phone'], values, categories), {
-        name: candidate.name, address: candidate.address, phone: candidate.phone
+        name: candidate.name, phone: candidate.phone
     });
     assert.deepEqual(buildChanges(professional, [], values, categories), {});
+    assert.deepEqual(buildChanges(professional, ['address', 'phone'], { ...values, address: 'MORENO 100' }, categories), { address: 'MORENO 100', phone: candidate.phone });
 });
 
 test('specialty maps to an existing category ID without renaming shared categories', () => {

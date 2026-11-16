@@ -1,12 +1,12 @@
 export const SOURCE_URL = 'https://cmolavarria.com.ar/listado-de-profesionales/';
+import { normalizeText, normalizeProfessionalName, professionalKey, professionalMatch, addressKey, phoneKey } from '../js/comparison-rules.js';
 
 export function normalize(value) {
-    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim().replace(/\s+/g, ' ');
+    return normalizeText(value);
 }
 
 export function normalizeName(value) {
-    return normalize(value).replace(/^(DR|DRA) /, '');
+    return normalizeProfessionalName(value);
 }
 
 function cellText(html) {
@@ -60,17 +60,6 @@ export function describeSource(response, html) {
     };
 }
 
-function addressKey(value) {
-    return normalize(value).replace(/\bN [O]\b/g, ' ').replace(/\bN\b(?=\s*\d)/g, ' ')
-        .replace(/\bGRAL\b/g, 'GENERAL').replace(/\bVTE\b/g, 'VICENTE')
-        .replace(/\bCNEL\b/g, 'CORONEL').replace(/\bAV\b/g, 'AVENIDA').replace(/\s+/g, ' ').trim();
-}
-
-function phoneKey(value) {
-    // Conservative: do not infer area codes or rewrite multiple contact numbers.
-    return String(value || '').replace(/[^0-9]/g, '');
-}
-
 function differences(current, source) {
     return ['address', 'phone'].filter(field => {
         // A missing source value never proposes erasing an existing contact detail.
@@ -81,35 +70,25 @@ function differences(current, source) {
 }
 
 export function compareDirectories(current, external) {
-    const index = new Map();
     const currentCounts = new Map();
-    for (const record of external) {
-        const key = normalizeName(record.name);
-        index.set(key, [...(index.get(key) || []), record]);
-    }
     for (const record of current) {
-        const key = normalizeName(record.name);
+        const key = professionalKey(record.name, record.categorias?.nombre);
         currentCounts.set(key, (currentCounts.get(key) || 0) + 1);
     }
-    return current.map((record, position) => {
-        const key = normalizeName(record.name);
-        const exact = index.get(key) || [];
+    return current.flatMap((record, position) => {
+        const key = professionalKey(record.name, record.categorias?.nombre);
+        const matches = external.map(candidate => ({ candidate, type: professionalMatch(record, candidate) })).filter(item => item.type);
+        matches.sort((a, b) => Number(b.type === 'exact') - Number(a.type === 'exact') || a.candidate.name.localeCompare(b.candidate.name, 'es'));
+        const candidates = matches.map(item => item.candidate);
+        if (!candidates.length) return [];
         const base = { row: position + 1, current: record };
-        if (exact.length === 1 && currentCounts.get(key) === 1) {
-            const changes = differences(record, exact[0]);
-            const missingFields = ['address', 'phone'].filter(field => !String(exact[0][field] || '').trim());
-            return { ...base, status: changes.length ? 'diferencias' : missingFields.length ? 'origen_incompleto' : 'sin_diferencias',
-                candidates: exact, changes, missingFields };
+        if (candidates.length === 1 && currentCounts.get(key) === 1) {
+            const changes = differences(record, candidates[0]);
+            const missingFields = ['address', 'phone'].filter(field => !String(candidates[0][field] || '').trim());
+            return { ...base, status: matches[0].type === 'possible' ? 'posible_coincidencia' : changes.length ? 'diferencias' : missingFields.length ? 'origen_incompleto' : 'sin_diferencias',
+                candidates, changes, missingFields };
         }
-        if (exact.length) return { ...base, status: 'ambiguo', candidates: exact, changes: [] };
-        const tokens = new Set(key.split(' ').filter(Boolean));
-        const candidates = external.map(candidate => {
-            const other = new Set(normalizeName(candidate.name).split(' ').filter(Boolean));
-            const overlap = [...tokens].filter(token => other.has(token)).length;
-            return { candidate, score: 2 * overlap / (tokens.size + other.size), overlap };
-        }).filter(item => item.overlap >= 2 && item.score >= 0.65)
-            .sort((a, b) => b.score - a.score).slice(0, 3).map(item => item.candidate);
-        return { ...base, status: candidates.length ? 'posible_coincidencia' : 'no_encontrado', candidates, changes: [] };
+        return { ...base, status: 'ambiguo', candidates, changes: [] };
     });
 }
 
@@ -137,6 +116,6 @@ export function renderReport(report) {
     <p><strong>Informe para revisión. No se modificó Supabase ni el respaldo JSON.</strong> Una diferencia no confirma que tu dato sea incorrecto. Verificá identidad, consultorio y pertenencia a la cartilla antes de editar.</p>
     <p>Datos de tu cartilla: ${e(report.currentSource)}. ${report.snapshotDate ? `Copia generada: ${e(report.snapshotDate)}.` : ''}</p>
     <div class="summary">${Object.entries(report.counts).map(([status, count]) => `${e(labels[status])}: <strong>${count}</strong>`).join(' · ')}</div>
-    <p>Las diferencias ignoran formato básico y algunas abreviaturas. Los teléfonos con prefijos distintos pueden aparecer como diferencias. Los nombres aproximados nunca se consideran coincidencias confirmadas.</p>
+    <p>La especialidad debe coincidir. Se admiten nombres de pila en otro orden y nombres abreviados compatibles, que se muestran como posibles coincidencias para confirmar identidad. Las direcciones ignoran los marcadores Nº, N° y No. delante del número. La altura, piso y departamento se conservan en la comparación. Los teléfonos con prefijos distintos pueden aparecer como diferencias.</p>
     ${cards || '<p>No hay casos pendientes de revisión.</p>'}</main></html>`;
 }

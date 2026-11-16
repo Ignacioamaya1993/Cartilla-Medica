@@ -4,6 +4,8 @@
 
 El panel de revisión manual está en `admin.html`. Permite iniciar sesión, cargar el JSON de la revisión semanal y elegir nombre, especialidad, dirección y teléfono por separado. Para activarlo, seguir [docs/admin-setup.md](docs/admin-setup.md): requiere crear un usuario de Supabase Auth y configurar dos variables privadas en Vercel. No modificar `js/env.js` con claves administrativas.
 
+Las decisiones de conservar se guardan por campo en la tabla privada `revision_decisiones` de Supabase. Los casos conservados no vuelven a pendientes mientras sigan iguales los valores comparados; se pueden reabrir desde el filtro Conservados. Los informes semanales continúan completos y el panel aplica las decisiones después de iniciar sesión. Ver también la sincronización de conservaciones de la versión anterior en la guía de administración.
+
 La web consulta Supabase y, si falla o demora mas de 8 segundos, muestra data/profesionales.json. La copia incluye las categorias relacionadas y solo los campos publicos de la cartilla. La fecha visible indica cuando se genero la copia; no indica cuando se modificaron los registros.
 
 ## Actualizar el respaldo
@@ -46,13 +48,12 @@ Al terminar, abrir la ejecucion en Actions y descargar el artifact revision-prof
 Estados:
 
 - diferencias: nombre normalizado unico en ambos listados, con direccion o telefono distintos. Revisar antes de editar.
-- ambiguo: nombre repetido en alguno de los listados; confirmar consultorio, especialidad e identidad.
-- posible_coincidencia: nombres que comparten palabras, nunca considerados identidad confirmada.
-- no_encontrado: no hay una coincidencia suficiente; no implica baja de la cartilla.
+- ambiguo: nombre completo y especialidad repetidos en alguno de los listados; confirmar consultorio e identidad.
+- Las especialidades diferentes se excluyen. Los nombres abreviados compatibles aparecen como posibles coincidencias para confirmar identidad. El resumen indica cuántos registros no tienen una coincidencia conjunta; no implica una baja de la cartilla.
 - origen_incompleto: la fuente tiene campos vacios. Nunca se propone borrar un dato por este motivo.
 - sin_diferencias: no se detectaron cambios de contacto con la normalizacion aplicada; no certifica vigencia.
 
-Se ignoran tildes, puntuacion, espacios y algunas abreviaturas de direccion. Los prefijos telefonicos distintos pueden producir diferencias para revision. Piso, departamento y consultorios requieren validacion humana. Los registros externos que no estan en tu cartilla no se incorporan.
+Se comparan nombres completos o abreviados compatibles dentro de la misma especialidad, ignorando tildes, puntuación, espacios y orden de las palabras del nombre. Se admiten nombres abreviados si comparten apellido y todas las palabras del nombre corto aparecen en el largo, aunque cambie el orden de los nombres de pila. Se presentan para confirmar identidad; la especialidad siempre debe coincidir. Las direcciones ignoran Nº, N°, No. y N.º delante de la altura, incluso sin espacio: MORENO 2647 equivale a MORENO Nº2647. Se conservan altura, piso y departamento; sus cambios sí se informan. Los prefijos telefónicos distintos pueden producir diferencias para revisión. Los registros externos que no están en tu cartilla no se incorporan.
 
 Para generar un informe local, desde la raiz del repositorio:
 

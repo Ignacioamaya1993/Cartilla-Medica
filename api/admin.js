@@ -1,4 +1,4 @@
-import { configuration, authorize, listRecords, applyUpdate, HttpError } from '../server/admin-service.mjs';
+import { configuration, authorize, listRecords, applyUpdate, rememberDecision, forgetDecision, HttpError } from '../server/admin-service.mjs';
 
 export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
@@ -11,11 +11,12 @@ export default async function handler(req, res) {
         const config = configuration();
         const user = await authorize(req.headers.authorization, config);
         if (req.method === 'GET') {
-            const [professionals, categories] = await Promise.all([
+            const [professionals, categories, reviewDecisions] = await Promise.all([
                 listRecords(config, 'profesionales', 'id,name,address,city,phone,categoria_id,categorias(nombre)'),
-                listRecords(config, 'categorias', 'id,nombre')
+                listRecords(config, 'categorias', 'id,nombre'),
+                listRecords(config, 'revision_decisiones', 'id,profesional_id,field,source_identity,current_value,source_value,fingerprint,decided_at,decided_by,revoked_at', fetch, { revoked_at: 'is.null' })
             ]);
-            return res.status(200).json({ professionals, categories, user: { id: user.id, email: user.email } });
+            return res.status(200).json({ professionals, categories, reviewDecisions, user: { id: user.id, email: user.email } });
         }
         if (!/^application\/json(?:;|$)/i.test(req.headers['content-type'] || '')) throw new HttpError(415, 'Se requiere JSON.');
         if (req.headers.origin && req.headers.origin !== `https://${req.headers.host}` &&
@@ -27,6 +28,8 @@ export default async function handler(req, res) {
             if (body.length > 15000) throw new HttpError(413, 'Solicitud demasiado grande.');
             try { body = JSON.parse(body); } catch { throw new HttpError(400, 'JSON inválido.'); }
         }
+        if (body?.action === 'remember') return res.status(200).json(await rememberDecision(body, config, user));
+        if (body?.action === 'forget') return res.status(200).json(await forgetDecision(body, config));
         const receipt = await applyUpdate(body, config, user);
         console.info(JSON.stringify({ event: 'directory_update', ...receipt }));
         return res.status(200).json(receipt);
