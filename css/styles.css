@@ -40,7 +40,7 @@ th:nth-child(2) { width: 26%; }
 .footer-icons img { display: block; width: 26px; }
 .footer-credit { display: flex; justify-self: end; align-self: end; align-items: center; justify-content: flex-end; gap: 10px; font-size: 11px; text-align: right; }
 .footer-credit strong { font-weight: 600; }
-.footer-credit img { display: block; flex-shrink: 0; width: 86px; height: 56px; object-fit: cover; border-radius: 8px; background: #fff; }
+.footer-credit img { display: block; flex-shrink: 0; width: 64px; height: 42px; object-fit: cover; background: transparent; }
 .swal2-popup-custom { border-radius: 18px; font-family: 'Montserrat', sans-serif; }
 .professional-details-popup { text-align: left; font-size: 14px; color: var(--ink); }
 .professional-details-popup p { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
