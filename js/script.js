@@ -1,4 +1,5 @@
-import { supabase } from "./supabase.js";
+import { ENV } from "./env.js";
+import { fetchProfessionals, validateSnapshot } from "./data-source.js";
 
 // Variables globales
 let professionals = [];
@@ -6,61 +7,24 @@ let currentPage = 1;
 let recordsPerPage = 10;
 let filteredProfessionals = [];
 let digitalCertificateOnly = false;
-const googleMapsApiKey = 'AIzaSyAyjnRLusJVkSsiJyssRPK2L6CB3hD1gN8';
-
-// Llama a la función initMap cuando se necesita mostrar el mapa
-function showMap(address) {
-    var geocoder = new google.maps.Geocoder();
-
-    // Log para verificar la dirección
-
-    geocoder.geocode({ 'address': address }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            var lat = results[0].geometry.location.lat();
-            var lng = results[0].geometry.location.lng();
-
-            Swal.fire({
-                title: 'Ubicación',
-                html: `<div id="map-container" style="width: 100%; height: 300px;">
-                           <iframe id="map" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
-                       </div>`,
-                confirmButtonText: 'Cerrar',
-                didOpen: () => {
-                    const mapIframe = document.getElementById('map');
-                    if (mapIframe) {
-                        mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${lat},${lng}`;
-                    }
-                },
-                customClass: {
-                    popup: 'swal2-popup-custom',
-                    title: 'swal2-title-custom',
-                    htmlContainer: 'swal2-html-custom',
-                }
-            });
-        } else {
-            console.error('Geocode no tuvo éxito debido a: ' + status);
-            Swal.fire('Error', 'No se pudo mostrar la ubicación en el mapa', 'error');
-        }
-    });
-}
-
 async function loadProfessionalsFromDB() {
-    const { data, error } = await supabase
-        .from('profesionales')
-        .select(`
-            *,
-            categorias (
-                nombre
-            )
-        `)
-        .order('name');
-
-    if (error) {
-        console.error('Error cargando profesionales:', error);
-        Swal.fire('Error', 'No se pudieron cargar los profesionales', 'error');
-        return;
+    try {
+    let data;
+    const status = document.getElementById('dataStatus');
+    status.textContent = 'Consultando cartilla...';
+    try {
+        data = await fetchProfessionals(ENV, AbortSignal.timeout(8000));
+        status.textContent = 'Cartilla consultada en línea';
+    } catch (error) {
+        console.warn('Online directory unavailable; loading local snapshot.');
+        const response = await fetch('./data/profesionales.json', { cache: 'no-cache', signal: AbortSignal.timeout(8000) });
+        if (!response.ok) throw new Error('Snapshot unavailable');
+        const snapshot = validateSnapshot(await response.json());
+        data = snapshot.professionals;
+        const date = new Intl.DateTimeFormat('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }).format(new Date(snapshot.generatedAt));
+        status.textContent = 'Mostrando copia guardada el ' + date + '. Puede haber cambios posteriores.';
     }
-    professionals = data.sort((a, b) => {
+    professionals = (data || []).sort((a, b) => {
         const specialtyA = a.categorias?.nombre || '';
         const specialtyB = b.categorias?.nombre || '';
 
@@ -85,6 +49,17 @@ async function loadProfessionalsFromDB() {
 
     populateSpecialtyFilter();
     updateProfessionals();
+    } catch (error) {
+        console.error('Error cargando profesionales:', error);
+        document.getElementById('dataStatus').textContent = 'Cartilla no disponible. Reintentá en unos minutos.';
+        document.getElementById('prevPage').disabled = true;
+        document.getElementById('nextPage').disabled = true;
+        document.getElementById('professionalList').innerHTML = '<tr><td colspan="5" class="empty-state">No se pudieron cargar los profesionales. <button type="button" id="retryLoad">Reintentar</button></td></tr>';
+        document.getElementById('retryLoad').addEventListener('click', () => {
+            document.getElementById('professionalList').innerHTML = '<tr><td colspan="5" class="empty-state">Cargando profesionales...</td></tr>';
+            loadProfessionalsFromDB();
+        });
+    }
 }
 
 // Función para actualizar la cantidad de registros por página
@@ -119,11 +94,12 @@ function populateSpecialtyFilter() {
 
 // Función para actualizar los profesionales mostrados
 function updateProfessionals() {
-    const searchQuery = document.getElementById('search').value.toLowerCase();
+    const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+    const searchQuery = normalize(document.getElementById('search').value.trim());
     const selectedSpecialty = document.getElementById('specialtyFilter').value;
 
     filteredProfessionals = professionals.filter(p =>
-        (p.name && p.name.toLowerCase().includes(searchQuery)) &&
+        normalize(p.name).includes(searchQuery) &&
         (selectedSpecialty === 'all' ||
             p.categorias?.nombre === selectedSpecialty) &&
         (!digitalCertificateOnly ||
@@ -145,7 +121,7 @@ function renderProfessionals() {
     );
 
     const professionalList = document.getElementById('professionalList');
-    professionalList.innerHTML = '';
+    professionalList.innerHTML = paginatedProfessionals.length ? '' : '<tr><td colspan="5" class="empty-state">No encontramos profesionales con esos filtros.</td></tr>';
 
     paginatedProfessionals.forEach(professional => {
         const row = document.createElement('tr');
@@ -153,18 +129,18 @@ function renderProfessionals() {
         row.innerHTML = `
             <td>${escapeHtml(professional.categorias?.nombre || '')}</td>
             <td>
-                <span
-                    class="professional-link"
-                    role="button"
-                    tabindex="0"
+                <span class="professional-name">${escapeHtml(professional.name || '')}</span>
+                <button type="button" class="professional-link"
                     title="Tocá para ver los datos completos"
-                >${escapeHtml(professional.name || '')}</span>
+                >${escapeHtml(professional.name || '')}<span class="details-hint">Ver ficha ↗</span></button>
 
                 ${professional.certificado_medico_digital === true
                     ? '<span class="digital-certificate-badge">✓ Certificado Médico Digital</span>'
                     : ''}
             </td>
-            <td>${escapeHtml(professional.address || '')}</td>
+            <td>${escapeHtml(professional.address || '')}
+                ${professional.address ? '<a class="table-maps-link" href="' + escapeHtml(getMapsUrl(professional)) + '" target="_blank" rel="noopener noreferrer" aria-label="Ver ubicaci&#243;n de ' + escapeHtml(professional.name || 'profesional') + ' en Google Maps">Ver en Google Maps &#8599;</a>' : ''}
+            </td>
             <td>${escapeHtml(professional.city || '')}</td>
             <td>${escapeHtml(professional.phone || '')}</td>
         `;
@@ -172,74 +148,21 @@ function renderProfessionals() {
         const nameLink = row.querySelector('.professional-link');
 
         const openDetails = () => {
-            if (window.innerWidth > 776) return;
+            if (!window.matchMedia("(max-width: 776px)").matches) return;
             showProfessionalDetails(professional);
         };
 
         nameLink.addEventListener('click', openDetails);
 
-        nameLink.addEventListener('keydown', event => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openDetails();
-            }
-        });
-
         professionalList.appendChild(row);
     });
 
-/*
-Código original de ubicación, guardado temporalmente:
-
-<td>
-    <button class="map-button" data-address="${fullAddress}">
-        <img src="img/maps.png" alt="Google Maps" width="40">
-    </button>
-</td>
-*/
-
-    /*document.querySelectorAll('.map-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const address = this.getAttribute('data-address');
-            showMap(address);
-        });
-    });
-
-    if (window.innerWidth <= 776) {
-        document.querySelectorAll('.professional-link').forEach(link => {
-            link.addEventListener('click', function () {
-                const specialty = this.parentElement.previousElementSibling.textContent;
-                const address = this.parentElement.nextElementSibling.textContent;
-                const city = this.parentElement.nextElementSibling.nextElementSibling.textContent;
-                const phone = this.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
-
-                // Construye la dirección completa con la ciudad y el país para la versión móvil
-                const fullAddress = `${address}, ${city}, Buenos Aires, Argentina`;
-
-                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(fullAddress)}`;
-
-                Swal.fire({
-                    icon: 'info',
-                    title: this.textContent,
-                    html: `
-                        <p><strong>Especialidad:</strong> ${specialty}</p>
-                        <p><strong>Dirección:</strong> ${address}</p>
-                        <p><strong>Localidad:</strong> ${city}</p>
-                        <p><strong>Teléfono:</strong> ${phone}</p>
-                        <iframe id="map" width="100%" height="200" frameborder="0" style="border:0" src="${mapUrl}" allowfullscreen></iframe>
-                    `,
-                    confirmButtonText: 'Cerrar',
-                    customClass: {
-                        popup: 'swal2-popup-custom',
-                        title: 'swal2-title-custom',
-                        htmlContainer: 'swal2-html-custom',
-                    }
-                });
-            });
-        });
-    }*/
 }
 
+function getMapsUrl(professional) {
+    const address = [professional.address, professional.city, 'Argentina'].filter(Boolean).join(', ');
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address);
+}
 
 function escapeHtml(value) {
     return String(value)
@@ -290,6 +213,8 @@ function showProfessionalDetails(professional) {
                     ${escapeHtml(phone)}
                 </p>
 
+                ${professional.address ? '<a class="maps-link" target="_blank" rel="noopener noreferrer" href="' + escapeHtml(getMapsUrl(professional)) + '">Ver en Google Maps ↗<small>Se abre en una nueva pestaña</small></a>' : ''}
+
                 ${digitalCertificate ? `
                     <p class="digital-certificate-badge">
                         ✓ Ofrece Certificado Médico Digital
@@ -310,15 +235,16 @@ function showProfessionalDetails(professional) {
 // Función para actualizar la información de paginación
 function updatePaginationInfo() {
     const pageInfo = document.getElementById('pageInfo');
-    pageInfo.textContent = `Página ${currentPage} de ${Math.ceil(filteredProfessionals.length / recordsPerPage)}`;
+    const pages = Math.ceil(filteredProfessionals.length / recordsPerPage);
+    pageInfo.textContent = pages ? `Página ${currentPage} de ${pages} · ${filteredProfessionals.length} resultados` : "Sin resultados";
 
     document.getElementById('prevPage').disabled = currentPage === 1;
-    document.getElementById('nextPage').disabled = currentPage === Math.ceil(filteredProfessionals.length / recordsPerPage);
+    document.getElementById('nextPage').disabled = currentPage >= Math.ceil(filteredProfessionals.length / recordsPerPage);
 }
 
 // Función para cambiar de página
 function changePage(direction) {
-    currentPage += direction;
+    currentPage = Math.max(1, Math.min(currentPage + direction, Math.ceil(filteredProfessionals.length / recordsPerPage) || 1));
     renderProfessionals();
     updatePaginationInfo();
 }
@@ -354,22 +280,3 @@ digitalCertificateFilter.addEventListener('click', () => {
     document.getElementById('nextPage').addEventListener('click', () => changePage(1));
 });
 
-// Llama a la función para cargar la API de Google Maps de manera asíncrona
-/*function loadGoogleMapsAPI() {
-    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-    if (!existingScript) {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-}
-
-function initMap() {
-    // Función de inicialización del mapa
-    // Esta función puede estar vacía si solo estás usando el iframe para mostrar el mapa
-}
-
-// Llama a la función para cargar la API de Google Maps
-loadGoogleMapsAPI();*/
