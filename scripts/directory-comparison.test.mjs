@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseDirectory, compareDirectories, renderReport } from './directory-comparison.mjs';
+import { parseDirectory, compareDirectories, renderReport, describeSource } from './directory-comparison.mjs';
 
 const local = { name: 'PÉREZ, MARÍA ANA', address: 'Gral. Paz 2524', phone: '42-3213', city: 'Olavarría', categorias: { nombre: 'Cardiología' } };
 const source = { name: 'PEREZ MARIA ANA', address: 'GENERAL PAZ Nº 2524', phone: '423213', specialty: 'CARDIOLOGIA' };
@@ -13,6 +13,18 @@ test('reads the expected table, line breaks, entities and blank cells', () => {
 
 test('normalizes accents, basic address abbreviations and phone punctuation', () => {
     assert.equal(compareDirectories([local], [source])[0].status, 'sin_diferencias');
+});
+
+test('accepts a title row before the expected headers', () => {
+    const html = '<table><tr><td colspan="4">Profesionales</td></tr><tr><th>APELLIDO Y NOMBRE</th><th>ESPECIALIDAD</th><th>DOMICILIO</th><th>TELEFONO</th></tr><tr><td>PEREZ ANA</td><td>CLINICA</td><td>PAZ 25</td><td>123456</td></tr></table>';
+    assert.equal(parseDirectory(html)[0].name, 'PEREZ ANA');
+});
+
+test('identifies a challenge page even with HTTP 200', () => {
+    const diagnostic = describeSource({ url: 'https://example.org/', status: 200, headers: new Headers({ 'content-type': 'text/html' }) }, '<title>Just a moment...</title><p>Enable JavaScript and cookies</p>');
+    assert.equal(diagnostic.possibleAccessChallenge, true);
+    assert.equal(diagnostic.tableCount, 0);
+    assert.throws(() => parseDirectory('<title>Just a moment...</title>'), /tabla esperada/);
 });
 
 test('reports changed contacts but never proposes deleting blank source fields', () => {

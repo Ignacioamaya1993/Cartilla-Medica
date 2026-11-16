@@ -35,9 +35,12 @@ jobs:
         run: node --use-system-ca scripts/review-directory.mjs
 
       - name: Guardar informe descargable
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: revision-profesionales
-          path: reports/revision-profesionales.*
-          if-no-files-found: error
+          path: |
+            reports/revision-profesionales.*
+            reports/diagnostico-origen.json
+          if-no-files-found: warn
           retention-days: 30

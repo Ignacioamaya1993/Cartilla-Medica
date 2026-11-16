@@ -30,8 +30,9 @@ export function parseDirectory(html) {
     for (const [table] of tables) {
         const rows = [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(match =>
             [...match[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell => cellText(cell[1])));
-        if (rows[0]?.map(normalize).join('|') !== 'APELLIDO Y NOMBRE|ESPECIALIDAD|DOMICILIO|TELEFONO') continue;
-        const records = rows.slice(1).filter(row => row.some(Boolean)).map(row => {
+        const headerIndex = rows.findIndex(row => row.map(normalize).join('|') === 'APELLIDO Y NOMBRE|ESPECIALIDAD|DOMICILIO|TELEFONO');
+        if (headerIndex === -1) continue;
+        const records = rows.slice(headerIndex + 1).filter(row => row.some(Boolean)).map(row => {
             if (row.length !== 4 || !row[0]) throw new Error('Fila inesperada en el listado de origen');
             return { name: row[0], specialty: row[1], address: row[2], phone: row[3] };
         });
@@ -39,6 +40,24 @@ export function parseDirectory(html) {
         return records;
     }
     throw new Error('No se encontro la tabla esperada; revisar el formato del sitio de origen');
+}
+
+export function describeSource(response, html) {
+    const text = value => value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 250);
+    const title = text(html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '');
+    const blocked = /just a moment|access denied|attention required|verify you are human|captcha|checking your browser|enable javascript and cookies/i.test(title + ' ' + html.slice(0, 15000));
+    return {
+        url: response.url,
+        status: response.status,
+        contentType: response.headers.get('content-type'),
+        characters: html.length,
+        title,
+        tableCount: [...html.matchAll(/<table\b/gi)].length,
+        headers: [...html.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)].slice(0, 20).map(match => text(match[1])),
+        possibleAccessChallenge: blocked,
+        explanation: blocked ? 'El sitio parece haber enviado una verificación o bloqueo de acceso. No se intenta eludirla.' :
+            'Comparar título y encabezados con la página esperada; HTTP 200 no garantiza que se haya recibido el listado.'
+    };
 }
 
 function addressKey(value) {

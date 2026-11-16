@@ -1,6 +1,6 @@
 import { readFile, mkdir, writeFile, appendFile } from 'node:fs/promises';
 import { fetchProfessionals, validateSnapshot } from '../js/data-source.js';
-import { SOURCE_URL, parseDirectory, compareDirectories, renderReport } from './directory-comparison.mjs';
+import { SOURCE_URL, parseDirectory, compareDirectories, renderReport, describeSource } from './directory-comparison.mjs';
 
 try {
     let current;
@@ -25,8 +25,15 @@ try {
         headers: { 'User-Agent': 'CartillaMedicaComparison/1.0 (+https://github.com/Ignacioamaya1993/Cartilla-Medica)' },
         signal: AbortSignal.timeout(60000), cache: 'no-store'
     });
-    if (!response.ok) throw new Error(`El listado externo respondió HTTP ${response.status}`);
-    const external = parseDirectory(await response.text());
+    const html = await response.text();
+    const diagnostic = describeSource(response, html);
+    console.log('Respuesta del sitio de origen:', JSON.stringify(diagnostic));
+    const diagnosticDirectory = new URL('../reports/', import.meta.url);
+    await mkdir(diagnosticDirectory, { recursive: true });
+    await writeFile(new URL('diagnostico-origen.json', diagnosticDirectory), JSON.stringify(diagnostic, null, 2), 'utf8');
+    if (!response.ok) throw new Error(`El listado externo respondió HTTP ${response.status}. Ver diagnostico-origen.json.`);
+    if (diagnostic.possibleAccessChallenge) throw new Error('El sitio de origen requiere verificación de acceso desde este servidor. Ver diagnostico-origen.json.');
+    const external = parseDirectory(html);
     // Catch challenge pages, changed layouts and partial/empty responses.
     if (external.length < 100) throw new Error('Listado externo incompleto o con formato distinto: revisión cancelada.');
     const results = compareDirectories(current, external);
