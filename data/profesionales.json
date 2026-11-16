@@ -1,20 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-16T11:28:43.467Z",
+  "generatedAt": "2026-11-16T22:18:27.932Z",
   "professionals": [
     {
       "name": "AGUERRE FRANCISCO",
-      "address": "ESPAÑA 2707",
-      "city": "OLAVARRIA ",
-      "phone": "442030",
-      "certificado_medico_digital": false,
-      "categorias": {
-        "nombre": "CLINICA QUIRURGICA"
-      }
-    },
-    {
-      "name": "ALAMO JOSE ALEJANDRO",
-      "address": "ESPAÑA 2727",
+      "address": "CHACABUCO Nº 2277",
       "city": "OLAVARRIA ",
       "phone": "442030",
       "certificado_medico_digital": false,
@@ -33,6 +23,16 @@
       }
     },
     {
+      "name": "ALAMO JOSE ALEJANDRO",
+      "address": "ESPAÑA 2727",
+      "city": "OLAVARRIA ",
+      "phone": "445100",
+      "certificado_medico_digital": false,
+      "categorias": {
+        "nombre": "CLINICA QUIRURGICA"
+      }
+    },
+    {
       "name": "ALBIN MONICA CRISTINA",
       "address": "VTE. LOPEZ 2479",
       "city": "OLAVARRIA ",
@@ -44,9 +44,9 @@
     },
     {
       "name": "ALCORTA AGUSTIN",
-      "address": "ESPAÑA 2727",
+      "address": "GRAL PAZ Nº 2524 - (3º PISO)",
       "city": "OLAVARRIA ",
-      "phone": "442030",
+      "phone": "417568",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "ORTOPEDIA Y TRAUMATOLOGIA"
@@ -64,7 +64,7 @@
     },
     {
       "name": "AMANZI ELVIRA",
-      "address": "MORENO 2687",
+      "address": "MORENO Nº 2647",
       "city": "OLAVARRIA ",
       "phone": "422013",
       "certificado_medico_digital": false,
@@ -84,7 +84,7 @@
     },
     {
       "name": "ANTELO MARIA VICTORIA",
-      "address": "ESPAÑA 2757",
+      "address": "ESPAÑA Nº 2727",
       "city": "OLAVARRIA ",
       "phone": "442030",
       "certificado_medico_digital": false,
@@ -134,9 +134,9 @@
     },
     {
       "name": "AVILA ROMINA ANABEL",
-      "address": "ALSINA 3696",
+      "address": "25 DE MAYO Nº 2506",
       "city": "OLAVARRIA ",
-      "phone": "410061",
+      "phone": "2284211001",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA PEDIATRICA"
@@ -179,7 +179,7 @@
       "phone": "417166",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "NEONATOLOGIA / PERINATOLOGIA"
+        "nombre": "CLINICA PEDIATRICA"
       }
     },
     {
@@ -189,7 +189,7 @@
       "phone": "417166",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "CLINICA PEDIATRICA"
+        "nombre": "NEONATOLOGIA / PERINATOLOGIA"
       }
     },
     {
@@ -279,7 +279,7 @@
       "phone": "2284692665",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "CLINICA QUIRURGICA"
+        "nombre": "CIRUGIA DEL TORAX"
       }
     },
     {
@@ -289,14 +289,14 @@
       "phone": "2284692665",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "CIRUGIA DEL TORAX"
+        "nombre": "CLINICA QUIRURGICA"
       }
     },
     {
       "name": "BERNEY PAULA MARCELA",
       "address": "VTE. LOPEZ 2061",
       "city": "OLAVARRIA ",
-      "phone": "416078",
+      "phone": "411240 / 416077",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "OFTALMOLOGIA"
@@ -344,7 +344,7 @@
     },
     {
       "name": "BLANDO CARLOS JORGE",
-      "address": "DORREGO 2957",
+      "address": "VELEZ SARFIED Nº 2512",
       "city": "OLAVARRIA ",
       "phone": "416050",
       "certificado_medico_digital": false,
@@ -356,7 +356,7 @@
       "name": "BOLLINI ROBERTO ALEJANDRO",
       "address": "GRAL. PAZ 2524 3 PISO",
       "city": "OLAVARRIA ",
-      "phone": "446308",
+      "phone": "417568",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA QUIRURGICA"
@@ -376,7 +376,7 @@
       "name": "BOLOGNA JULIO CESAR\n",
       "address": "HORNOS 3030\n",
       "city": "OLAVARRIA \n",
-      "phone": "422761\n",
+      "phone": "442525",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA PEDIATRICA"
@@ -384,7 +384,7 @@
     },
     {
       "name": "BONETTO OSCAR ESTEBAN",
-      "address": "GRAL. PAZ 2540",
+      "address": "GRAL PAZ 2554",
       "city": "OLAVARRIA ",
       "phone": "442400",
       "certificado_medico_digital": false,
@@ -416,7 +416,7 @@
       "name": "BONOMO MARINA ALEJANDRA",
       "address": "AV. DEL VALLE 3919",
       "city": "OLAVARRIA ",
-      "phone": "415780 / 2284380566",
+      "phone": "2284380046",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CARDIOLOGIA"
@@ -496,7 +496,7 @@
       "name": "BUGOSEN SERGIO FABIAN",
       "address": "GRAL. PAZ 2524 4 PISO",
       "city": "OLAVARRIA ",
-      "phone": "2284520619",
+      "phone": "415997",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA QUIRURGICA"
@@ -524,9 +524,9 @@
     },
     {
       "name": "BUZEKI MARIA VIRGINIA",
-      "address": "HORNOS 2871",
+      "address": "CHACABUCO Nº 2277",
       "city": "OLAVARRIA ",
-      "phone": "444925",
+      "phone": "429603",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA PEDIATRICA"
@@ -544,9 +544,9 @@
     },
     {
       "name": "CACERES CARLOS ALBERTO",
-      "address": "VTE. LOPEZ 2479",
+      "address": "Av. SARMIENTO Nº 2864",
       "city": "OLAVARRIA ",
-      "phone": "421001",
+      "phone": "2284598370",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "ORTOPEDIA Y TRAUMATOLOGIA"
@@ -594,9 +594,9 @@
     },
     {
       "name": "CASCO ANA CLAUDIA",
-      "address": "HORNOS 2871",
+      "address": "CHACABUCO Nº 2277",
       "city": "OLAVARRIA ",
-      "phone": "444925",
+      "phone": "429603",
       "certificado_medico_digital": false,
       "categorias": {
         "nombre": "CLINICA PEDIATRICA"
@@ -689,7 +689,7 @@
       "phone": "425698",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "NEFROLOGIA"
+        "nombre": "CLINICA MEDICA"
       }
     },
     {
@@ -699,7 +699,7 @@
       "phone": "425698",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "CLINICA MEDICA"
+        "nombre": "NEFROLOGIA"
       }
     },
     {
@@ -1569,7 +1569,7 @@
       "phone": "413100",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "GINECOLOGIA"
+        "nombre": "OBSTETRICIA"
       }
     },
     {
@@ -1579,7 +1579,7 @@
       "phone": "413100",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "OBSTETRICIA"
+        "nombre": "GINECOLOGIA"
       }
     },
     {
@@ -1979,7 +1979,7 @@
       "phone": "488100",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "GINECOLOGIA"
+        "nombre": "OBSTETRICIA"
       }
     },
     {
@@ -1989,7 +1989,7 @@
       "phone": "488100",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "OBSTETRICIA"
+        "nombre": "GINECOLOGIA"
       }
     },
     {
@@ -2159,7 +2159,7 @@
       "phone": "431120",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "INFECTOLOGIA"
+        "nombre": "CLINICA MEDICA"
       }
     },
     {
@@ -2169,7 +2169,7 @@
       "phone": "431120",
       "certificado_medico_digital": false,
       "categorias": {
-        "nombre": "CLINICA MEDICA"
+        "nombre": "INFECTOLOGIA"
       }
     },
     {
