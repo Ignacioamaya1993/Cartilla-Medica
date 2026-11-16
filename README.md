@@ -1,5 +1,9 @@
 # Cartilla medica
 
+## Administración con selección de campos
+
+El panel de revisión manual está en `admin.html`. Permite iniciar sesión, cargar el JSON de la revisión semanal y elegir nombre, especialidad, dirección y teléfono por separado. Para activarlo, seguir [docs/admin-setup.md](docs/admin-setup.md): requiere crear un usuario de Supabase Auth y configurar dos variables privadas en Vercel. No modificar `js/env.js` con claves administrativas.
+
 La web consulta Supabase y, si falla o demora mas de 8 segundos, muestra data/profesionales.json. La copia incluye las categorias relacionadas y solo los campos publicos de la cartilla. La fecha visible indica cuando se genero la copia; no indica cuando se modificaron los registros.
 
 ## Actualizar el respaldo
